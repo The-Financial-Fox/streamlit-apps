@@ -62,14 +62,12 @@ def build_sankey(
     node_color_map=None,
     node_thickness=20,
     node_padding=20,
-    opacity=0.6,
-    node_textfont=None
+    opacity=0.6
 ):
     """
     Build a Plotly Sankey diagram from flows: list of (source, amount, target).
-    
-    node_color_map   : dict {node_label: color_hex} for individual node colors
-    node_textfont    : dict with font properties, e.g. {"size":12, "family":"Arial", "color":"black"}
+
+    node_color_map: dict {node_label: color_hex} for individual node colors
     """
     # Gather node labels
     labels = []
@@ -96,7 +94,6 @@ def build_sankey(
             # Default color if not specified in node_color_map
             colors.append("#1f77b4")
 
-    # Define node + link dictionaries
     node = dict(
         pad=node_padding,
         thickness=node_thickness,
@@ -104,9 +101,6 @@ def build_sankey(
         label=labels,
         color=colors
     )
-    # Apply textfont settings to node labels, if provided
-    if node_textfont:
-        node["textfont"] = node_textfont
 
     link = dict(
         source=sources,
@@ -116,7 +110,6 @@ def build_sankey(
     )
 
     fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
-    # We'll set the layout (including any global font settings, title, etc.) in main()
     return fig
 
 def generate_download_link(fig, file_format="png"):
@@ -221,24 +214,16 @@ def main():
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Prepare node textfont settings
-    node_textfont = {
-        "family": node_label_font_family,
-        "size": node_label_font_size,
-        "color": "black"
-    }
-
     # Build Sankey diagram
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
         node_thickness=node_thickness,
         node_padding=node_padding,
-        opacity=link_opacity,
-        node_textfont=node_textfont
+        opacity=link_opacity
     )
 
-    # Update layout for the main title font
+    # Update the layout with title and a base font (for tooltips, etc.)
     fig.update_layout(
         title=dict(
             text=chart_title,
@@ -248,11 +233,19 @@ def main():
         margin=dict(l=50, r=50, t=50, b=50),
         width=1200,
         height=700,
+        # Set a global (base) font for the entire figure:
         font=dict(
-            family=title_font_family, 
-            size=title_font_size  # This sets a base font for all non-node text (e.g., tooltips)
+            family=node_label_font_family,
+            size=node_label_font_size,
+            color="black"
         )
     )
+
+    # Alternatively, if you want even finer control, you can do:
+    # fig.update_traces(
+    #     textfont=dict(family=node_label_font_family, size=node_label_font_size, color="black"),
+    #     selector=dict(type='sankey')
+    # )
 
     st.plotly_chart(fig, use_container_width=True)
 
