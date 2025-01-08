@@ -132,15 +132,59 @@ def generate_download_link(fig, file_format="png"):
         href = f'<a href="data:image/svg+xml;base64,{b64}" download="sankey_diagram.svg">Download SVG</a>'
     return href
 
+
 # ---------------
 # Streamlit App
 # ---------------
 def main():
+    # Page Title
     st.title("Sankey Diagrams for FP&A")
-    st.markdown("""
-    Empower your Financial Planning & Analysis (FP&A) teams to visualize and analyze budget flows using Sankey diagrams.
-    """)
 
+    # Engaging Introduction
+    st.markdown("""
+    <style>
+    .intro-text {
+        background-color: #f0f2f6;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    .intro-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .intro-body {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    </style>
+    <div class="intro-text">
+        <div class="intro-title">What is a Sankey Diagram?</div>
+        <div class="intro-body">
+            A <strong>Sankey diagram</strong> is a type of flow diagram where the width of each flow 
+            is proportional to the quantity of the flow. Think of it like a river of data, 
+            where thicker streams show bigger amounts and smaller streams show lesser amounts.
+        </div>
+    </div>
+
+    <div class="intro-text">
+        <div class="intro-title">Why is it Useful for FP&A?</div>
+        <div class="intro-body">
+            In <strong>Financial Planning & Analysis (FP&A)</strong>, it's crucial to see how 
+            money moves through different parts of the organization. With a Sankey diagram, 
+            you can <em>instantly visualize</em> the biggest cost centers, spot waste, and track 
+            budget allocations—without drowning in spreadsheets!
+            <ul>
+                <li><strong>Clarity:</strong> Clearly see where resources flow from and to.</li>
+                <li><strong>Efficiency:</strong> Identify bottlenecks and potential savings.</li>
+                <li><strong>Communication:</strong> Share visual insights with stakeholders.</li>
+            </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Sidebar for input selection
     st.sidebar.header("Data Input Options")
     uploaded_file = st.sidebar.file_uploader(
         "Upload CSV or Excel (with columns: Source, Amount, Target)", 
@@ -183,16 +227,16 @@ def main():
     # Sort to have a deterministic list
     unique_nodes = sorted(unique_nodes)
 
+    # Sidebar for node color customization
     st.sidebar.header("Node Color Customization")
     st.sidebar.write("Pick a color for each node:")
     node_color_map = {}
     for node in unique_nodes:
-        # Provide each node with a color picker; default can be any hex or pick a random color
-        color_default = "#1f77b4"  # or any default hex
+        color_default = "#1f77b4"
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Now build and show the Sankey with user-selected colors
+    # Build and display Sankey
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
@@ -200,7 +244,6 @@ def main():
         node_padding=node_padding,
         opacity=link_opacity
     )
-
     st.plotly_chart(fig, use_container_width=True)
 
     # Export options
@@ -226,8 +269,10 @@ def main():
     ---
     """)
 
+
 if __name__ == "__main__":
     main()
+
 
 
 # Add a footer to the app
