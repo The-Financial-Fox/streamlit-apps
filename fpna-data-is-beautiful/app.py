@@ -491,7 +491,7 @@ elif analysis_type == "Cohort Analysis":
         [(row["Cohort Month"], idx, rate) for row in cohorts for idx, rate in zip(row["Cohort Index"], row["Retention Rates"])],
         columns=["Cohort Month", "Cohort Index", "Retention Rate"]
     )
-    cohort_data["Retention Rate"] = (cohort_data["Retention Rate"] * 100).astype(int)  # Convert to percentage
+    cohort_data["Retention Rate"] = cohort_data["Retention Rate"] * 100  # Convert to percentage
 
     # Pivot for heatmap
     cohort_pivot = cohort_data.pivot(index="Cohort Month", columns="Cohort Index", values="Retention Rate")
@@ -502,7 +502,7 @@ elif analysis_type == "Cohort Analysis":
     sns.heatmap(
         cohort_pivot,
         annot=True,
-        fmt="d",  # No decimals
+        fmt=".0f",  # Round to whole numbers without decimals
         annot_kws={"size": 10, "fontweight": "bold"},  # Bold and slightly larger annotations
         cmap="coolwarm",  # Modern color palette
         cbar_kws={"label": "Retention Rate (%)", "shrink": 0.8},  # Custom color bar
@@ -523,6 +523,7 @@ elif analysis_type == "Cohort Analysis":
 
     # Display the plot
     st.pyplot(fig)
+
 
 
 # Add a footer to the app
