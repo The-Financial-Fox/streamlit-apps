@@ -21,7 +21,6 @@ def parse_flow_text(flow_text: str):
         if not line.strip():
             continue
         try:
-            # Splitting around brackets
             parts = line.strip().split("[")
             source_part = parts[0].strip()
             remainder = parts[1].split("]")
@@ -51,13 +50,11 @@ def load_data_from_file(uploaded_file):
     else:
         df = pd.read_excel(uploaded_file)
 
-    # Ensure columns are present
     required_cols = {"Source", "Amount", "Target"}
     if not required_cols.issubset(df.columns):
         st.error(f"Uploaded file must contain columns: {required_cols}")
         return []
 
-    # Convert to list of tuples
     flows = [(row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()]
     return flows
 
@@ -89,14 +86,16 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         if node_color_map and label in node_color_map:
             colors.append(node_color_map[label])
         else:
-            # default color if not in color map
-            colors.append("#1f77b4")  # a default Plotly color
+            # Default color
+            colors.append("#1f77b4")
 
     link = dict(
         source=sources,
         target=targets,
         value=values,
-        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),  # link colors
+        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),
+        # If you want link labels (optional), add 'label' here:
+        # label=[f"{val}" for val in values],  
     )
 
     node = dict(
@@ -104,16 +103,27 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         thickness=node_thickness,
         line=dict(color="black", width=0.5),
         label=labels,
-        color=colors
+        color=colors,
+        textfont=dict(color="black", size=14),  # Node label font
     )
 
-    fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
+    fig = go.Figure(
+        data=[go.Sankey(
+            node=node,
+            link=link,
+            arrangement="snap"
+        )]
+    )
+
     fig.update_layout(
         hovermode="x",
         margin=dict(l=50, r=50, t=50, b=50),
         width=1200,
         height=700,
+        template="plotly_white",             # White background
+        font=dict(size=14, color="black"),   # Global font settings
     )
+
     return fig
 
 
@@ -184,7 +194,7 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    # Sidebar for input selection
+    # Sidebar: Data input
     st.sidebar.header("Data Input Options")
     uploaded_file = st.sidebar.file_uploader(
         "Upload CSV or Excel (with columns: Source, Amount, Target)", 
@@ -197,12 +207,12 @@ def main():
         height=150
     )
 
-    # Sidebar sliders
+    # Sidebar: Customization
     node_thickness = st.sidebar.slider("Node Thickness", 10, 50, 20)
     node_padding = st.sidebar.slider("Node Padding", 10, 50, 20)
     link_opacity = st.sidebar.slider("Link Opacity", 0.1, 1.0, 0.6)
 
-    # Collect flows from file and text
+    # Collect flows
     flows = []
     if uploaded_file:
         file_flows = load_data_from_file(uploaded_file)
@@ -216,7 +226,7 @@ def main():
         st.info("No flows available. Upload a file or input flows manually.")
         return
 
-    # Build a list of unique node labels so we can show color pickers
+    # Get unique node labels for color picking
     unique_nodes = []
     for s, amt, t in flows:
         if s not in unique_nodes:
@@ -224,10 +234,8 @@ def main():
         if t not in unique_nodes:
             unique_nodes.append(t)
 
-    # Sort to have a deterministic list
     unique_nodes = sorted(unique_nodes)
 
-    # Sidebar for node color customization
     st.sidebar.header("Node Color Customization")
     st.sidebar.write("Pick a color for each node:")
     node_color_map = {}
@@ -236,7 +244,7 @@ def main():
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Build and display Sankey
+    # Build the Sankey diagram
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
@@ -244,6 +252,7 @@ def main():
         node_padding=node_padding,
         opacity=link_opacity
     )
+
     st.plotly_chart(fig, use_container_width=True)
 
     # Export options
@@ -272,6 +281,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
