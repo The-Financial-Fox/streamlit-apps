@@ -1,8 +1,15 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 import base64
 import io
+
+# Ensure Kaleido is recognized for PNG export
+# (Adjust the default image size, if desired)
+pio.kaleido.scope.default_format = "png"
+pio.kaleido.scope.default_width = 1200
+pio.kaleido.scope.default_height = 700
 
 st.set_page_config(page_title="Sankey Diagrams for FP&A", layout="wide")
 
@@ -35,6 +42,7 @@ def parse_flow_text(flow_text: str):
             st.warning(f"Could not parse line: {line}")
     return flows
 
+
 def load_data_from_file(uploaded_file):
     """
     Load CSV or Excel with columns: [Source, Amount, Target].
@@ -57,6 +65,7 @@ def load_data_from_file(uploaded_file):
     flows = [(row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()]
     return flows
 
+
 def build_sankey(
     flows,
     node_color_map=None,
@@ -66,8 +75,7 @@ def build_sankey(
 ):
     """
     Build a Plotly Sankey diagram from flows: list of (source, amount, target).
-
-    node_color_map: dict {node_label: color_hex} for individual node colors
+    node_color_map: dict {node_label: color_hex} for individual node colors.
     """
     # Gather node labels
     labels = []
@@ -106,24 +114,26 @@ def build_sankey(
         source=sources,
         target=targets,
         value=values,
-        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),
+        color=[f"rgba(153, 204, 255, {opacity})"] * len(values)
     )
 
     fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
     return fig
 
+
 def generate_download_link(fig, file_format="png"):
     """
     Generate a download link for the Plotly figure as an image (PNG or SVG).
+    Requires Kaleido (for PNG) or can also handle SVG.
     """
     buffer = io.BytesIO()
+    # Attempt to write the image using Kaleido
+    fig.write_image(buffer, format=file_format)
+    b64 = base64.b64encode(buffer.getvalue()).decode()
+
     if file_format == "png":
-        fig.write_image(buffer, format="png")
-        b64 = base64.b64encode(buffer.getvalue()).decode()
         href = f'<a href="data:image/png;base64,{b64}" download="sankey_diagram.png">Download PNG</a>'
     else:
-        fig.write_image(buffer, format="svg")
-        b64 = base64.b64encode(buffer.getvalue()).decode()
         href = f'<a href="data:image/svg+xml;base64,{b64}" download="sankey_diagram.svg">Download SVG</a>'
     return href
 
@@ -131,30 +141,30 @@ def generate_download_link(fig, file_format="png"):
 # Streamlit App
 # ---------------
 def main():
-    # Page Title and Explanation
+    # Page Title
     st.title("Sankey Diagrams for FP&A")
-    
-    # Introduction explaining Sankey diagrams and their usefulness
+
+    # Intro / Explanation
     st.markdown("""
     **What is a Sankey Diagram?**  
-    A Sankey diagram is a type of **flow diagram** where the width of each arrow (link) 
-    is proportional to the amount or quantity of that flow. It provides a clear, visually 
+    A Sankey diagram is a type of **flow diagram** where the width of each arrow (link)
+    is proportional to the amount or quantity of that flow. It provides a clear, visually
     compelling way to see how resources move or distribute among various categories.
     
     **Why is this useful for FP&A?**  
     In **Financial Planning & Analysis (FP&A)**, Sankey diagrams help you:
-    - Clearly understand the **allocation** of budgets across different departments and cost centers.  
-    - Quickly spot **high-impact** cost drivers and areas where efficiency could be improved.  
-    - Visualize end-to-end **money flows** from revenue sources through to expenses or savings.  
+    - Clearly understand the **allocation** of budgets across different departments and cost centers.
+    - Quickly spot **high-impact** cost drivers and areas where efficiency could be improved.
+    - Visualize end-to-end **money flows** from revenue sources through to expenses or savings.
     
-    By seeing the entire flow in one place, FP&A teams can make **better-informed decisions** 
+    By seeing the entire flow in one place, FP&A teams can make **better-informed decisions**
     and communicate financial insights more effectively to stakeholders.
     """)
 
-    # Sidebar inputs
+    # Sidebar controls
     st.sidebar.header("Data Input Options")
     uploaded_file = st.sidebar.file_uploader(
-        "Upload CSV or Excel (with columns: Source, Amount, Target)", 
+        "Upload CSV or Excel (with columns: Source, Amount, Target)",
         type=["csv", "xlsx", "xls"]
     )
 
@@ -223,7 +233,7 @@ def main():
         opacity=link_opacity
     )
 
-    # Update the layout with title and a base font (for tooltips, etc.)
+    # Update layout with chart title and a base font (for node labels & tooltips)
     fig.update_layout(
         title=dict(
             text=chart_title,
@@ -233,19 +243,12 @@ def main():
         margin=dict(l=50, r=50, t=50, b=50),
         width=1200,
         height=700,
-        # Set a global (base) font for the entire figure:
         font=dict(
             family=node_label_font_family,
             size=node_label_font_size,
             color="black"
         )
     )
-
-    # Alternatively, if you want even finer control, you can do:
-    # fig.update_traces(
-    #     textfont=dict(family=node_label_font_family, size=node_label_font_size, color="black"),
-    #     selector=dict(type='sankey')
-    # )
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -266,7 +269,7 @@ def main():
     st.markdown("""
     ---
     **Technical Integration**  
-    - **Plotly** for Sankey generation  
+    - **Plotly** (with Kaleido) for PNG/SVG export  
     - **Streamlit** for UI  
     - **GitHub** for version control  
     ---
