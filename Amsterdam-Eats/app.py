@@ -29,6 +29,53 @@ st.markdown(
 st.title("Where The Nest Eats in Amsterdam")
 st.write("Welcome! Select a **food category** below to explore the recommended spots.")
 
+# Add a text input at the top
+search_query_global = st.text_input(
+    "Search across ALL restaurants by name, location, or menu items:",
+    ""
+)
+
+# We'll store search matches in a dict by category
+global_results = {}
+
+if search_query_global:
+    for category_name, restaurant_list in restaurants_data.items():
+        # Filter each restaurant in this category
+        matches = []
+        for r in restaurant_list:
+            if (
+                search_query_global.lower() in r["name"].lower()
+                or search_query_global.lower() in (r["location"] or "").lower()
+                or search_query_global.lower() in (r["menu_items"] or "").lower()
+            ):
+                matches.append(r)
+        # If any matches in this category, add them to global_results
+        if matches:
+            global_results[category_name] = matches
+
+# If the user typed something, show results
+if search_query_global:
+    if not global_results:
+        st.warning(f"No results found for '{search_query_global}' across all categories.")
+    else:
+        for cat, res_list in global_results.items():
+            st.subheader(cat)
+            for r in res_list:
+                st.markdown(f"### {r['name']}")
+                if r["website"]:
+                    st.markdown(f"- **Website**: [{r['website']}]({r['website']})")
+                else:
+                    st.markdown("- **Website**: *No official link*")
+                st.markdown(f"- **Location**: {r['location']}")
+                st.markdown(f"- **Key Menu Items**: {r['menu_items']}")
+                st.markdown(f"- **Price Range**: {r['price_range']}")
+                st.markdown(f"- **Notes**: {r['notes']}")
+                st.markdown("---")
+
+
+
+
+
 # ---------- RESTAURANT DATA (COMPLETE) ----------
 # Organized by Category, each entry includes: Name, Website, Location, Key Menu Items, Price Range, Notes
 restaurants_data = {
