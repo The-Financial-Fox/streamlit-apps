@@ -102,6 +102,14 @@ restaurants_data = {
     ],
     "Shared Dining Favorites": [
         {
+            "name": "Samba Kitchen",
+            "website": "https://www.samba-kitchen.nl/",
+            "location": "Ceintuurbaan 63 1072 EV Amsterdam",
+            "menu_items": "All-you-can-eat Brazilian",
+            "price_range": "€-€€",
+            "notes": "You must try the flan, pineapple us lit too, specially with picanha"
+        },
+        {
             "name": "Cafe Binnenvisser",
             "website": "https://binnenvisser.nl",
             "location": "De Clercqstraat 82, Amsterdam",
