@@ -203,58 +203,158 @@ elif analysis_type == "Cost Structure Analysis":
 
 # 6. Revenue by Region
 elif analysis_type == "Revenue by Region":
-    fig = px.pie(df, names="Region", values="Revenue", title="Revenue by Region")
+    st.write("""
+    #### When to Use:
+    Revenue by region analysis helps FP&A teams identify geographical strengths and weaknesses.
+    It is useful for prioritizing regions for investment or identifying underperforming areas
+    that may need additional focus.
+    """)
+
+    # Dummy region-based data
+    region_data = pd.DataFrame({
+        "Region": ["North", "South", "East", "West"],
+        "Revenue": [500, 700, 300, 400]
+    })
+
+    # Interactive Plotly Pie Chart
+    fig = px.pie(
+        region_data,
+        names="Region",
+        values="Revenue",
+        title="Revenue by Region",
+        color="Region",
+        color_discrete_sequence=px.colors.sequential.Viridis
+    )
+    fig.update_traces(textinfo="percent+label", pull=[0, 0.1, 0, 0])  # Emphasize "South"
+    fig.update_layout(title_font_size=20)
     st.plotly_chart(fig)
+
 
 # 7. Product Profitability
 elif analysis_type == "Product Profitability":
-    products = ["Product A", "Product B", "Product C"]
-    profit = [200, 150, 100]
-    fig = px.bar(
-        x=products,
-        y=profit,
-        labels={"x": "Product", "y": "Profit ($)"},
-        title="Product Profitability",
-    )
-    st.plotly_chart(fig)
+    st.write("""
+    #### When to Use:
+    Use product profitability analysis to understand which products generate the most profit.
+    FP&A teams can leverage this to focus on high-margin products or identify unprofitable
+    products to optimize the portfolio.
+    """)
+
+    # Dummy product profitability data
+    product_data = pd.DataFrame({
+        "Product": ["A", "B", "C", "D"],
+        "Profit": [200, 300, 100, 150]
+    })
+
+    # Seaborn barplot with custom palette
+    sns.set_theme(style="whitegrid")
+    fig, ax = plt.subplots(figsize=(12, 8))
+    colors = sns.color_palette("coolwarm", n_colors=len(product_data))
+    sns.barplot(data=product_data, x="Product", y="Profit", palette=colors, ax=ax)
+
+    # Enhance the visualization
+    ax.set_title("Product Profitability", fontsize=20, fontweight="bold")
+    ax.set_xlabel("Product", fontsize=14)
+    ax.set_ylabel("Profit ($)", fontsize=14)
+    ax.tick_params(axis="x", labelsize=12)
+    ax.tick_params(axis="y", labelsize=12)
+    st.pyplot(fig)
+
 
 # 8. Customer Segmentation
 elif analysis_type == "Customer Segmentation":
-    segmentation = {
+    st.write("""
+    #### When to Use:
+    Customer segmentation allows FP&A teams to group customers by behavior, revenue, or other attributes.
+    This helps identify high-value customers or areas where targeted marketing may yield better results.
+    """)
+
+    # Dummy segmentation data
+    segment_data = pd.DataFrame({
         "Segment": ["Enterprise", "SMB", "Consumer"],
-        "Revenue": [300, 150, 200],
-    }
-    seg_df = pd.DataFrame(segmentation)
+        "Revenue": [800, 500, 300]
+    })
+
+    # Interactive Plotly Bar Chart
     fig = px.bar(
-        seg_df,
+        segment_data,
         x="Segment",
         y="Revenue",
-        title="Customer Segmentation",
-        labels={"Revenue": "Revenue ($)"},
+        color="Segment",
+        title="Customer Segmentation Analysis",
+        color_discrete_sequence=px.colors.qualitative.Plotly
+    )
+    fig.update_layout(
+        title_font_size=20,
+        xaxis_title="Customer Segment",
+        yaxis_title="Revenue ($)",
+        font=dict(size=14),
+        template="plotly_white"
     )
     st.plotly_chart(fig)
 
 # 9. Scenario Analysis
 elif analysis_type == "Scenario Analysis":
-    scenarios = {"Base": 140, "Optimistic": 160, "Pessimistic": 120}
+    st.write("""
+    #### When to Use:
+    Scenario analysis helps FP&A teams model best-case, worst-case, and base-case scenarios.
+    This is especially useful for forecasting and stress-testing financial plans.
+    """)
+
+    # Dummy scenario data
+    scenario_data = {
+        "Scenario": ["Base", "Optimistic", "Pessimistic"],
+        "Revenue": [140, 160, 120]
+    }
+    scenario_df = pd.DataFrame(scenario_data)
+
+    # Interactive Plotly Bar Chart
     fig = px.bar(
-        x=scenarios.keys(),
-        y=scenarios.values(),
-        labels={"x": "Scenario", "y": "Revenue ($)"},
+        scenario_df,
+        x="Scenario",
+        y="Revenue",
         title="Scenario Analysis",
+        color="Scenario",
+        color_discrete_sequence=["#1f77b4", "#2ca02c", "#d62728"]  # Custom colors
+    )
+    fig.update_layout(
+        title_font_size=20,
+        xaxis_title="Scenario",
+        yaxis_title="Revenue ($)",
+        font=dict(size=14),
+        template="plotly_white"
     )
     st.plotly_chart(fig)
 
+
 # 10. Cash Flow Trends
 elif analysis_type == "Cash Flow Trends":
-    cash_flow = [30, 40, 50, 60, 70, 80]
-    fig, ax = plt.subplots()
-    ax.plot(df["Month"], cash_flow, marker="o", label="Cash Flow")
-    ax.set_title("Cash Flow Trends")
-    ax.set_xlabel("Month")
-    ax.set_ylabel("Cash Flow ($)")
-    ax.legend()
+    st.write("""
+    #### When to Use:
+    Cash flow trends are crucial for monitoring liquidity. FP&A teams can use this analysis
+    to ensure the business has sufficient cash to meet short-term obligations and plan for investments.
+    """)
+
+    # Dummy cash flow data
+    cash_flow_data = {
+        "Month": df["Month"],
+        "Cash Flow": [30, 40, 50, 60, 70, 80]
+    }
+    cash_flow_df = pd.DataFrame(cash_flow_data)
+
+    # Enhanced Line Chart with Seaborn
+    sns.set_theme(style="whitegrid")
+    fig, ax = plt.subplots(figsize=(14, 8))
+    sns.lineplot(data=cash_flow_df, x="Month", y="Cash Flow", marker="o", linewidth=2.5, color="teal", ax=ax)
+
+    # Enhance the visualization
+    ax.set_title("Cash Flow Trends", fontsize=20, fontweight="bold")
+    ax.set_xlabel("Month", fontsize=14)
+    ax.set_ylabel("Cash Flow ($)", fontsize=14)
+    ax.tick_params(axis="x", labelsize=12, rotation=45)
+    ax.tick_params(axis="y", labelsize=12)
+    ax.grid(visible=True, linestyle="--", alpha=0.6)
     st.pyplot(fig)
+
 
 # 11. Headcount Trends
 elif analysis_type == "Headcount Trends":
