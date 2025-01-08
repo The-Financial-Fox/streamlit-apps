@@ -35,7 +35,7 @@ analysis_type = st.sidebar.selectbox(
         "Break-even Analysis",
         "EBITDA Trends",
         "Variance Analysis",
-        "Strategic KPIs",
+        "Cohort Analysis",
     ]
 )
 
@@ -460,7 +460,7 @@ elif analysis_type == "Variance Analysis":
     st.pyplot(fig)
 
 # 20. Strategic KPIs
-elif analysis_type == "Strategic KPIs":
+elif analysis_type == "Cohort Analysis":
     st.write("""
     #### When to Use:
     Cohort analysis helps FP&A teams understand customer retention and behavior over time.
