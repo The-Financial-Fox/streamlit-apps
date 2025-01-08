@@ -461,19 +461,65 @@ elif analysis_type == "Variance Analysis":
 
 # 20. Strategic KPIs
 elif analysis_type == "Strategic KPIs":
-    kpis = {
-        "KPI": ["Revenue Growth", "Gross Margin", "Net Profit Margin"],
-        "Value": [15, 60, 12],  # Example KPI values
-    }
-    kpi_df = pd.DataFrame(kpis)
-    fig = px.bar(
-        kpi_df,
-        x="KPI",
-        y="Value",
-        title="Strategic KPIs",
-        labels={"Value": "Percentage (%)"},
+    st.write("""
+    #### When to Use:
+    Cohort analysis helps FP&A teams understand customer retention and behavior over time.
+    It is ideal for tracking customer lifetime value, churn rates, or repeat purchase behavior.
+    """)
+
+    # Dummy data generation for cohort analysis
+    import numpy as np
+    import pandas as pd
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    # Create dummy cohort data
+    np.random.seed(42)  # For reproducibility
+    cohorts = []
+    cohort_months = pd.date_range(start="2022-01", periods=24, freq="M")  # 2 years
+    for i, cohort_start in enumerate(cohort_months):
+        retention_rates = np.maximum(1 - np.arange(24) * 0.05, 0)  # Simulate decay
+        retention_rates = retention_rates[: 24 - i]  # Limit cohorts to valid months
+        cohorts.append({
+            "Cohort Month": str(cohort_start)[:7],
+            "Retention Rates": retention_rates,
+            "Cohort Index": list(range(len(retention_rates)))
+        })
+
+    # Flatten into a DataFrame
+    cohort_data = pd.DataFrame(
+        [(row["Cohort Month"], idx, rate) for row in cohorts for idx, rate in zip(row["Cohort Index"], row["Retention Rates"])],
+        columns=["Cohort Month", "Cohort Index", "Retention Rate"]
     )
-    st.plotly_chart(fig)
+    cohort_data["Retention Rate"] = (cohort_data["Retention Rate"] * 100).astype(int)  # Convert to percentage
+
+    # Pivot for heatmap
+    cohort_pivot = cohort_data.pivot(index="Cohort Month", columns="Cohort Index", values="Retention Rate")
+
+    # Create heatmap
+    sns.set_theme(style="whitegrid")
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(
+        cohort_pivot,
+        annot=True,
+        fmt=".0f",
+        cmap="Blues",
+        cbar_kws={"label": "Retention Rate (%)"},
+        linewidths=0.5,
+        ax=ax
+    )
+
+    # Enhance the visualization
+    ax.set_title("Cohort Analysis - Retention Rate", fontsize=20, fontweight="bold")
+    ax.set_xlabel("Cohort Index (Months since first purchase)", fontsize=14)
+    ax.set_ylabel("Cohort Month", fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.tight_layout()
+
+    # Display the plot
+    st.pyplot(fig)
+
 
 # Add a footer to the app
 st.markdown("""
