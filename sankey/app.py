@@ -35,7 +35,6 @@ def parse_flow_text(flow_text: str):
             st.warning(f"Could not parse line: {line}")
     return flows
 
-
 def load_data_from_file(uploaded_file):
     """
     Load CSV or Excel with columns: [Source, Amount, Target].
@@ -57,7 +56,6 @@ def load_data_from_file(uploaded_file):
 
     flows = [(row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()]
     return flows
-
 
 def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20, opacity=0.6):
     """
@@ -86,16 +84,14 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         if node_color_map and label in node_color_map:
             colors.append(node_color_map[label])
         else:
-            # Default color
+            # default color if not in the map
             colors.append("#1f77b4")
 
     link = dict(
         source=sources,
         target=targets,
         value=values,
-        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),
-        # If you want link labels (optional), add 'label' here:
-        # label=[f"{val}" for val in values],  
+        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),  # Link colors
     )
 
     node = dict(
@@ -103,29 +99,17 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         thickness=node_thickness,
         line=dict(color="black", width=0.5),
         label=labels,
-        color=colors,
-        textfont=dict(color="black", size=14),  # Node label font
+        color=colors
     )
 
-    fig = go.Figure(
-        data=[go.Sankey(
-            node=node,
-            link=link,
-            arrangement="snap"
-        )]
-    )
-
+    fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
     fig.update_layout(
         hovermode="x",
         margin=dict(l=50, r=50, t=50, b=50),
         width=1200,
         height=700,
-        template="plotly_white",             # White background
-        font=dict(size=14, color="black"),   # Global font settings
     )
-
     return fig
-
 
 def generate_download_link(fig, file_format="png"):
     """
@@ -142,59 +126,28 @@ def generate_download_link(fig, file_format="png"):
         href = f'<a href="data:image/svg+xml;base64,{b64}" download="sankey_diagram.svg">Download SVG</a>'
     return href
 
-
 # ---------------
 # Streamlit App
 # ---------------
 def main():
-    # Page Title
+    # Page Title and Explanation
     st.title("Sankey Diagrams for FP&A")
-
-    # Engaging Introduction
+    
     st.markdown("""
-    <style>
-    .intro-text {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-    }
-    .intro-title {
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-    .intro-body {
-        font-size: 1.1rem;
-        line-height: 1.6;
-    }
-    </style>
-    <div class="intro-text">
-        <div class="intro-title">What is a Sankey Diagram?</div>
-        <div class="intro-body">
-            A <strong>Sankey diagram</strong> is a type of flow diagram where the width of each flow 
-            is proportional to the quantity of the flow. Think of it like a river of data, 
-            where thicker streams show bigger amounts and smaller streams show lesser amounts.
-        </div>
-    </div>
+    **What is a Sankey Diagram?**  
+    A Sankey diagram is a type of **flow diagram** where the width of each arrow (link) is proportional 
+    to the amount or quantity of the flow. It provides a clear, visually compelling way to see how resources 
+    move or distribute among various categories. 
+    
+    **Why is this useful for FP&A?**  
+    In **Financial Planning & Analysis (FP&A)**, Sankey diagrams help you:
+    - Clearly understand the **allocation** of budgets across different departments and cost centers.  
+    - Quickly spot **high-impact** cost drivers and areas where efficiency could be improved.  
+    - Visualize end-to-end **money flows** from revenue sources through to expenses or savings.  
+    By seeing the entire flow in one place, FP&A teams can make **better-informed decisions** and
+    communicate financial insights more effectively to stakeholders.
+    """)
 
-    <div class="intro-text">
-        <div class="intro-title">Why is it Useful for FP&A?</div>
-        <div class="intro-body">
-            In <strong>Financial Planning & Analysis (FP&A)</strong>, it's crucial to see how 
-            money moves through different parts of the organization. With a Sankey diagram, 
-            you can <em>instantly visualize</em> the biggest cost centers, spot waste, and track 
-            budget allocations—without drowning in spreadsheets!
-            <ul>
-                <li><strong>Clarity:</strong> Clearly see where resources flow from and to.</li>
-                <li><strong>Efficiency:</strong> Identify bottlenecks and potential savings.</li>
-                <li><strong>Communication:</strong> Share visual insights with stakeholders.</li>
-            </ul>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Sidebar: Data input
     st.sidebar.header("Data Input Options")
     uploaded_file = st.sidebar.file_uploader(
         "Upload CSV or Excel (with columns: Source, Amount, Target)", 
@@ -207,7 +160,7 @@ def main():
         height=150
     )
 
-    # Sidebar: Customization
+    # Sidebar sliders
     node_thickness = st.sidebar.slider("Node Thickness", 10, 50, 20)
     node_padding = st.sidebar.slider("Node Padding", 10, 50, 20)
     link_opacity = st.sidebar.slider("Link Opacity", 0.1, 1.0, 0.6)
@@ -226,15 +179,12 @@ def main():
         st.info("No flows available. Upload a file or input flows manually.")
         return
 
-    # Get unique node labels for color picking
-    unique_nodes = []
+    # Build a list of unique nodes for color customization
+    unique_nodes = set()
     for s, amt, t in flows:
-        if s not in unique_nodes:
-            unique_nodes.append(s)
-        if t not in unique_nodes:
-            unique_nodes.append(t)
-
-    unique_nodes = sorted(unique_nodes)
+        unique_nodes.add(s)
+        unique_nodes.add(t)
+    unique_nodes = sorted(list(unique_nodes))
 
     st.sidebar.header("Node Color Customization")
     st.sidebar.write("Pick a color for each node:")
@@ -244,7 +194,7 @@ def main():
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Build the Sankey diagram
+    # Build Sankey diagram with user-selected colors
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
@@ -281,8 +231,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 
 
 # Add a footer to the app
