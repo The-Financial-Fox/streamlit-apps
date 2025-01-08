@@ -497,22 +497,26 @@ elif analysis_type == "Cohort Analysis":
     cohort_pivot = cohort_data.pivot(index="Cohort Month", columns="Cohort Index", values="Retention Rate")
 
     # Create heatmap
-    sns.set_theme(style="whitegrid")
+    sns.set_theme(style="white")  # Remove gridlines
     fig, ax = plt.subplots(figsize=(12, 8))
     sns.heatmap(
         cohort_pivot,
         annot=True,
-        fmt=".0f",
-        cmap="Blues",
-        cbar_kws={"label": "Retention Rate (%)"},
-        linewidths=0.5,
+        fmt="d",  # No decimals
+        annot_kws={"size": 10, "fontweight": "bold"},  # Bold and slightly larger annotations
+        cmap="coolwarm",  # Modern color palette
+        cbar_kws={"label": "Retention Rate (%)", "shrink": 0.8},  # Custom color bar
+        linewidths=0.3,  # Slightly thinner dividers
+        linecolor="white",  # Clean gridlines
         ax=ax
     )
 
     # Enhance the visualization
     ax.set_title("Cohort Analysis - Retention Rate", fontsize=20, fontweight="bold")
-    ax.set_xlabel("Cohort Index (Months since first purchase)", fontsize=14)
-    ax.set_ylabel("Cohort Month", fontsize=14)
+    ax.set_xlabel("Cohort Index (Months since first purchase)", fontsize=14, fontweight="bold")
+    ax.set_ylabel("Cohort Month", fontsize=14, fontweight="bold")
+    ax.tick_params(axis="x", labelsize=12)
+    ax.tick_params(axis="y", labelsize=12)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
     plt.tight_layout()
