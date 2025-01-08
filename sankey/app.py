@@ -228,3 +228,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Add a footer to the app
+st.markdown("""
+---
+### Built with ChatGPT by Christian Martinez  
+Learn here how: [Click this link](https://www.linkedin.com/in/christianmartinezthefinancialfox/)
+""", unsafe_allow_html=True)
