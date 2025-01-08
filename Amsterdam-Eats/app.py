@@ -26,7 +26,7 @@ st.markdown(
 )
 
 # ---------- APP TITLE / HEADER ----------
-st.title("Where Christian Eats in Amsterdam")
+st.title("Where The Nest Eats in Amsterdam")
 st.write("Welcome! Select a **food category** below to explore the recommended spots.")
 
 # ---------- RESTAURANT DATA (COMPLETE) ----------
