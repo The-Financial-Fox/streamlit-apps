@@ -1,4 +1,6 @@
 pandas
 matplotlib
+seaborn
+plotly
 openpyxl
 streamlit
