@@ -54,52 +54,150 @@ st.write(f"### {analysis_type}")
 
 # 1. Revenue Trends
 if analysis_type == "Revenue Trends":
-    fig, ax = plt.subplots()
-    ax.plot(df["Month"], df["Revenue"], marker="o", label="Revenue")
-    ax.set_title("Revenue Trends")
-    ax.set_xlabel("Month")
-    ax.set_ylabel("Revenue ($)")
-    ax.legend()
+    st.write("""
+    #### When to Use:
+    Revenue trends are essential for identifying how revenue evolves over time. FP&A teams can use this analysis
+    to monitor seasonality, evaluate growth rates, and detect any unusual patterns that need further investigation.
+    """)
+
+    # Set Seaborn theme
+    sns.set_theme(style="whitegrid")
+
+    # Dummy multi-year data for better visuals
+    years = ["2020", "2021", "2022"]
+    multi_year_data = []
+    for year in years:
+        year_revenue = df["Revenue"] + np.random.randint(-10, 20, size=len(df))
+        for i, month in enumerate(df["Month"]):
+            multi_year_data.append({"Month": month, "Year": year, "Revenue": year_revenue[i]})
+    multi_year_df = pd.DataFrame(multi_year_data)
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(14, 8))
+    custom_palette = sns.color_palette("coolwarm", n_colors=len(years))
+    sns.lineplot(data=multi_year_df, x="Month", y="Revenue", hue="Year", style="Year", markers=True, linewidth=2.5, palette=custom_palette)
+
+    # Enhance the visualization
+    ax.set_title('Revenue Trend Analysis (Multi-Year)', fontsize=20, fontweight='bold')
+    ax.set_xlabel('Month', fontsize=14)
+    ax.set_ylabel('Revenue ($)', fontsize=14)
+    ax.tick_params(axis='x', labelsize=12, rotation=45)
+    ax.tick_params(axis='y', labelsize=12)
+    ax.legend(title='Year', fontsize=12, title_fontsize=14, loc='upper left', bbox_to_anchor=(1, 1))
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
+
 
 # 2. Expense Analysis
 elif analysis_type == "Expense Analysis":
-    fig, ax = plt.subplots()
-    ax.bar(df["Month"], df["Expenses"], color="orange", label="Expenses")
-    ax.set_title("Expense Analysis")
-    ax.set_xlabel("Month")
-    ax.set_ylabel("Expenses ($)")
-    ax.legend()
+    st.write("""
+    #### When to Use:
+    Expense analysis helps FP&A teams understand cost drivers and identify areas where expenses are increasing.
+    This is critical for cost control initiatives, budget adherence, and profitability analysis.
+    """)
+
+    # Set Seaborn theme
+    sns.set_theme(style="whitegrid")
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(14, 8))
+    colors = sns.color_palette("rocket", as_cmap=False)
+    sns.barplot(data=df, x="Month", y="Expenses", palette=colors, ax=ax)
+
+    # Enhance the visualization
+    ax.set_title('Monthly Expense Analysis', fontsize=20, fontweight='bold')
+    ax.set_xlabel('Month', fontsize=14)
+    ax.set_ylabel('Expenses ($)', fontsize=14)
+    ax.tick_params(axis='x', labelsize=12, rotation=45)
+    ax.tick_params(axis='y', labelsize=12)
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
+
 
 # 3. Profitability Metrics
 elif analysis_type == "Profitability Metrics":
+    st.write("""
+    #### When to Use:
+    Profitability metrics allow FP&A teams to measure how effectively the business generates profit
+    relative to revenue and costs. It is useful for benchmarking performance and identifying margin improvements.
+    """)
+
+    # Interactive Plot with Plotly
     fig = px.bar(
         df,
         x="Month",
         y="Profit",
         title="Profitability Metrics",
         labels={"Profit": "Profit ($)"},
+        color="Profit",
+        color_continuous_scale="Blues",
+    )
+    fig.update_layout(
+        title_font=dict(size=20, family="Arial"),
+        xaxis_title="Month",
+        yaxis_title="Profit ($)",
+        font=dict(size=14),
+        xaxis_tickangle=45,
+        template="plotly_white",
     )
     st.plotly_chart(fig)
 
+
 # 4. Forecast Accuracy
 elif analysis_type == "Forecast Accuracy":
+    st.write("""
+    #### When to Use:
+    Use forecast accuracy to compare actual performance against forecasts. This helps FP&A teams
+    refine forecasting models and assess whether assumptions were valid for decision-making.
+    """)
+
+    # Dummy forecast data
     forecast = [95, 110, 120, 135, 145, 155]
-    fig, ax = plt.subplots()
-    ax.plot(df["Month"], df["Revenue"], label="Actual Revenue", marker="o")
-    ax.plot(df["Month"], forecast, label="Forecast Revenue", linestyle="--", marker="o")
-    ax.set_title("Forecast Accuracy")
-    ax.set_xlabel("Month")
-    ax.set_ylabel("Revenue ($)")
-    ax.legend()
+
+    # Set Seaborn theme
+    sns.set_theme(style="whitegrid")
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(14, 8))
+    sns.lineplot(x=df["Month"], y=df["Revenue"], label="Actual Revenue", marker="o", linewidth=2.5, color="blue", ax=ax)
+    sns.lineplot(x=df["Month"], y=forecast, label="Forecast Revenue", linestyle="--", marker="o", linewidth=2.5, color="orange", ax=ax)
+
+    # Enhance the visualization
+    ax.set_title('Forecast Accuracy', fontsize=20, fontweight='bold')
+    ax.set_xlabel('Month', fontsize=14)
+    ax.set_ylabel('Revenue ($)', fontsize=14)
+    ax.tick_params(axis='x', labelsize=12, rotation=45)
+    ax.tick_params(axis='y', labelsize=12)
+    ax.legend(title=None, fontsize=12)
+    ax.grid(visible=True, linestyle='--', alpha=0.6)
     st.pyplot(fig)
+
 
 # 5. Cost Structure Analysis
 elif analysis_type == "Cost Structure Analysis":
-    fig, ax = plt.subplots()
-    ax.pie(df["Expenses"], labels=df["Month"], autopct='%1.1f%%', startangle=90)
-    ax.set_title("Cost Structure Analysis")
+    st.write("""
+    #### When to Use:
+    Cost structure analysis breaks down total expenses into components, helping FP&A teams
+    understand how costs are allocated. This is crucial for identifying inefficiencies and
+    optimizing resource allocation.
+    """)
+
+    # Set Seaborn theme
+    sns.set_theme(style="whitegrid")
+
+    # Create dummy cost components
+    cost_data = pd.DataFrame({
+        "Category": ["Salaries", "Marketing", "R&D", "Operations", "Miscellaneous"],
+        "Cost": [40, 25, 15, 10, 10]
+    })
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(10, 8))
+    wedges, texts, autotexts = ax.pie(
+        cost_data["Cost"], labels=cost_data["Category"], autopct='%1.1f%%', startangle=140, colors=sns.color_palette("pastel"),
+        textprops=dict(color="black", fontsize=12)
+    )
+    ax.set_title("Cost Structure Breakdown", fontsize=20, fontweight="bold")
     st.pyplot(fig)
 
 # 6. Revenue by Region
