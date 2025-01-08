@@ -475,3 +475,11 @@ elif analysis_type == "Strategic KPIs":
     )
     st.plotly_chart(fig)
 
+# Add a footer to the app
+st.markdown("""
+---
+### Built with ChatGPT by Christian Martinez  
+Learn here how: [Christian Martinez's LinkedIn Profile](https://www.linkedin.com/in/christianmartinezthefinancialfox/)
+""", unsafe_allow_html=True)
+
+
