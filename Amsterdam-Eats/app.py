@@ -875,9 +875,31 @@ for i, category in enumerate(category_list):
 # ---------- IF USER SELECTED A CATEGORY, SHOW THE RESTAURANTS ----------
 if selected_category:
     st.subheader(f"**{selected_category}**")
+    
+    # Add a text input for search
+    search_query = st.text_input(
+        "Search within this category by name, location, or menu item:",
+        ""
+    )
+
+    # Filter the list of restaurants based on the search query
+    filtered_results = []
     for r in restaurants_data[selected_category]:
+        # Convert each field to lowercase for case-insensitive matching
+        if (
+            search_query.lower() in r["name"].lower()
+            or search_query.lower() in (r["location"] or "").lower()
+            or search_query.lower() in (r["menu_items"] or "").lower()
+        ):
+            filtered_results.append(r)
+
+    # If no results match, show a message
+    if len(filtered_results) == 0 and search_query:
+        st.warning(f"No results found for '{search_query}'")
+
+    # Display either the filtered results or all if search is empty
+    for r in filtered_results:
         st.markdown(f"### {r['name']}")
-        # If website is present, make it a clickable link
         if r["website"]:
             st.markdown(f"- **Website**: [{r['website']}]({r['website']})")
         else:
@@ -887,3 +909,4 @@ if selected_category:
         st.markdown(f"- **Price Range**: {r['price_range']}")
         st.markdown(f"- **Notes**: {r['notes']}")
         st.markdown("---")
+
