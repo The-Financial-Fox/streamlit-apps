@@ -2,7 +2,7 @@ import streamlit as st
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
-    page_title="Where Christian Eats in Amsterdam",
+    page_title="Where the Nest Eats in Amsterdam",
     page_icon="🍴",
     layout="wide"
 )
