@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_extras.clickable_images import clickable_images
+from streamlit-extras.clickable_images import clickable_images
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
