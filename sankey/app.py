@@ -57,10 +57,19 @@ def load_data_from_file(uploaded_file):
     flows = [(row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()]
     return flows
 
-def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20, opacity=0.6):
+def build_sankey(
+    flows,
+    node_color_map=None,
+    node_thickness=20,
+    node_padding=20,
+    opacity=0.6,
+    node_textfont=None
+):
     """
     Build a Plotly Sankey diagram from flows: list of (source, amount, target).
-    node_color_map is a dict {node_label: color_hex}.
+    
+    node_color_map   : dict {node_label: color_hex} for individual node colors
+    node_textfont    : dict with font properties, e.g. {"size":12, "family":"Arial", "color":"black"}
     """
     # Gather node labels
     labels = []
@@ -84,16 +93,10 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         if node_color_map and label in node_color_map:
             colors.append(node_color_map[label])
         else:
-            # default color if not in the map
+            # Default color if not specified in node_color_map
             colors.append("#1f77b4")
 
-    link = dict(
-        source=sources,
-        target=targets,
-        value=values,
-        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),  # Link colors
-    )
-
+    # Define node + link dictionaries
     node = dict(
         pad=node_padding,
         thickness=node_thickness,
@@ -101,14 +104,19 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         label=labels,
         color=colors
     )
+    # Apply textfont settings to node labels, if provided
+    if node_textfont:
+        node["textfont"] = node_textfont
+
+    link = dict(
+        source=sources,
+        target=targets,
+        value=values,
+        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),
+    )
 
     fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
-    fig.update_layout(
-        hovermode="x",
-        margin=dict(l=50, r=50, t=50, b=50),
-        width=1200,
-        height=700,
-    )
+    # We'll set the layout (including any global font settings, title, etc.) in main()
     return fig
 
 def generate_download_link(fig, file_format="png"):
@@ -133,37 +141,56 @@ def main():
     # Page Title and Explanation
     st.title("Sankey Diagrams for FP&A")
     
+    # Introduction explaining Sankey diagrams and their usefulness
     st.markdown("""
     **What is a Sankey Diagram?**  
-    A Sankey diagram is a type of **flow diagram** where the width of each arrow (link) is proportional 
-    to the amount or quantity of the flow. It provides a clear, visually compelling way to see how resources 
-    move or distribute among various categories. 
+    A Sankey diagram is a type of **flow diagram** where the width of each arrow (link) 
+    is proportional to the amount or quantity of that flow. It provides a clear, visually 
+    compelling way to see how resources move or distribute among various categories.
     
     **Why is this useful for FP&A?**  
     In **Financial Planning & Analysis (FP&A)**, Sankey diagrams help you:
     - Clearly understand the **allocation** of budgets across different departments and cost centers.  
     - Quickly spot **high-impact** cost drivers and areas where efficiency could be improved.  
     - Visualize end-to-end **money flows** from revenue sources through to expenses or savings.  
-    By seeing the entire flow in one place, FP&A teams can make **better-informed decisions** and
-    communicate financial insights more effectively to stakeholders.
+    
+    By seeing the entire flow in one place, FP&A teams can make **better-informed decisions** 
+    and communicate financial insights more effectively to stakeholders.
     """)
 
+    # Sidebar inputs
     st.sidebar.header("Data Input Options")
     uploaded_file = st.sidebar.file_uploader(
         "Upload CSV or Excel (with columns: Source, Amount, Target)", 
         type=["csv", "xlsx", "xls"]
     )
 
-    # Manual text input
     manual_flows_text = st.sidebar.text_area(
         "Or input flows manually in the format:\n\nSource [Amount] Target",
         height=150
     )
 
-    # Sidebar sliders
     node_thickness = st.sidebar.slider("Node Thickness", 10, 50, 20)
     node_padding = st.sidebar.slider("Node Padding", 10, 50, 20)
     link_opacity = st.sidebar.slider("Link Opacity", 0.1, 1.0, 0.6)
+
+    # **New** font customization
+    st.sidebar.header("Title Settings")
+    chart_title = st.sidebar.text_input("Chart Title", value="Sankey Diagram")
+    title_font_family = st.sidebar.selectbox(
+        "Title Font Family",
+        ["Arial", "Times New Roman", "Courier New", "Verdana", "Helvetica"],
+        index=0
+    )
+    title_font_size = st.sidebar.slider("Title Font Size", 12, 36, 20)
+
+    st.sidebar.header("Node Label Font")
+    node_label_font_family = st.sidebar.selectbox(
+        "Node Label Font Family",
+        ["Arial", "Times New Roman", "Courier New", "Verdana", "Helvetica"],
+        index=0
+    )
+    node_label_font_size = st.sidebar.slider("Node Label Font Size", 8, 24, 12)
 
     # Collect flows
     flows = []
@@ -194,13 +221,37 @@ def main():
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Build Sankey diagram with user-selected colors
+    # Prepare node textfont settings
+    node_textfont = {
+        "family": node_label_font_family,
+        "size": node_label_font_size,
+        "color": "black"
+    }
+
+    # Build Sankey diagram
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
         node_thickness=node_thickness,
         node_padding=node_padding,
-        opacity=link_opacity
+        opacity=link_opacity,
+        node_textfont=node_textfont
+    )
+
+    # Update layout for the main title font
+    fig.update_layout(
+        title=dict(
+            text=chart_title,
+            font=dict(family=title_font_family, size=title_font_size)
+        ),
+        hovermode="x",
+        margin=dict(l=50, r=50, t=50, b=50),
+        width=1200,
+        height=700,
+        font=dict(
+            family=title_font_family, 
+            size=title_font_size  # This sets a base font for all non-node text (e.g., tooltips)
+        )
     )
 
     st.plotly_chart(fig, use_container_width=True)
