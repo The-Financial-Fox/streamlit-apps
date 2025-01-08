@@ -6,9 +6,9 @@ import io
 
 st.set_page_config(page_title="Sankey Diagrams for FP&A", layout="wide")
 
-# ---------------
+# ----------------
 # Helper Functions
-# ---------------
+# ----------------
 def parse_flow_text(flow_text: str):
     """
     Parse manual flow input of the form:
@@ -20,8 +20,6 @@ def parse_flow_text(flow_text: str):
     for line in lines:
         if not line.strip():
             continue
-        # Example line: "Marketing [100000] Advertising"
-        # We'll find the brackets and split accordingly
         try:
             # Splitting around brackets
             parts = line.strip().split("[")
@@ -41,8 +39,8 @@ def parse_flow_text(flow_text: str):
 
 def load_data_from_file(uploaded_file):
     """
-    Load CSV or Excel and expect columns: [Source, Amount, Target]
-    Returns a list of tuples (source, amount, target).
+    Load CSV or Excel with columns: [Source, Amount, Target].
+    Returns a list of (source, amount, target).
     """
     if uploaded_file is None:
         return []
@@ -51,27 +49,23 @@ def load_data_from_file(uploaded_file):
     if file_name.endswith(".csv"):
         df = pd.read_csv(uploaded_file)
     else:
-        # assume Excel
         df = pd.read_excel(uploaded_file)
 
-    # Make sure we have the right columns
+    # Ensure columns are present
     required_cols = {"Source", "Amount", "Target"}
     if not required_cols.issubset(df.columns):
         st.error(f"Uploaded file must contain columns: {required_cols}")
         return []
 
     # Convert to list of tuples
-    flows = [
-        (row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()
-    ]
+    flows = [(row["Source"], row["Amount"], row["Target"]) for _, row in df.iterrows()]
     return flows
 
 
 def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20, opacity=0.6):
     """
-    Build a Plotly Sankey diagram given flows (list of (source, amount, target)).
-    node_color_map can override default node colors. (dict node->color)
-    Returns a Plotly figure.
+    Build a Plotly Sankey diagram from flows: list of (source, amount, target).
+    node_color_map is a dict {node_label: color_hex}.
     """
     # Gather node labels
     labels = []
@@ -95,15 +89,15 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         if node_color_map and label in node_color_map:
             colors.append(node_color_map[label])
         else:
-            # default color
-            colors.append("blue")  
+            # default color if not in color map
+            colors.append("#1f77b4")  # a default Plotly color
 
-    link = dict(source=sources, target=targets, value=values)
-
-    # You can customize link color or use an array. For simplicity, we use "rgba(..., opacity)"
-    # Setting alpha channel below for link color
-    link_colors = [f"rgba(153, 204, 255, {opacity})"] * len(values)
-    link["color"] = link_colors
+    link = dict(
+        source=sources,
+        target=targets,
+        value=values,
+        color=[f"rgba(153, 204, 255, {opacity})"] * len(values),  # link colors
+    )
 
     node = dict(
         pad=node_padding,
@@ -113,16 +107,7 @@ def build_sankey(flows, node_color_map=None, node_thickness=20, node_padding=20,
         color=colors
     )
 
-    fig = go.Figure(
-        data=[
-            go.Sankey(
-                node=node,
-                link=link,
-                arrangement="snap"  # or "freeform", "fixed", "snap"
-            )
-        ]
-    )
-
+    fig = go.Figure(data=[go.Sankey(node=node, link=link, arrangement="snap")])
     fig.update_layout(
         hovermode="x",
         margin=dict(l=50, r=50, t=50, b=50),
@@ -136,7 +121,6 @@ def generate_download_link(fig, file_format="png"):
     """
     Generate a download link for the Plotly figure as an image (PNG or SVG).
     """
-    # Convert figure to image data in memory
     buffer = io.BytesIO()
     if file_format == "png":
         fig.write_image(buffer, format="png")
@@ -148,36 +132,35 @@ def generate_download_link(fig, file_format="png"):
         href = f'<a href="data:image/svg+xml;base64,{b64}" download="sankey_diagram.svg">Download SVG</a>'
     return href
 
-
 # ---------------
 # Streamlit App
 # ---------------
 def main():
     st.title("Sankey Diagrams for FP&A")
     st.markdown("""
-    Empower your Financial Planning & Analysis (FP&A) team to visualize and analyze budget flows using interactive Sankey diagrams.
+    Empower your Financial Planning & Analysis (FP&A) teams to visualize and analyze budget flows using Sankey diagrams.
     """)
 
-    # Sidebar for input selection
     st.sidebar.header("Data Input Options")
-
-    # 1) Upload file
-    uploaded_file = st.sidebar.file_uploader("Upload CSV/Excel with columns: Source, Amount, Target", type=["csv", "xlsx", "xls"])
-
-    # 2) Manual text input
-    manual_flows_text = st.sidebar.text_area(
-        "Or input flows manually in the format:\n\nSource [Amount] Target",
-        height=200
+    uploaded_file = st.sidebar.file_uploader(
+        "Upload CSV or Excel (with columns: Source, Amount, Target)", 
+        type=["csv", "xlsx", "xls"]
     )
 
-    # 3) Node thickness, node padding, link opacity
-    node_thickness = st.sidebar.slider("Node Thickness", min_value=10, max_value=50, value=20)
-    node_padding = st.sidebar.slider("Node Padding", min_value=10, max_value=50, value=20)
-    link_opacity = st.sidebar.slider("Link Opacity", min_value=0.1, max_value=1.0, value=0.6)
+    # Manual text input
+    manual_flows_text = st.sidebar.text_area(
+        "Or input flows manually in the format:\n\nSource [Amount] Target",
+        height=150
+    )
 
-    # Collect flows
+    # Sidebar sliders
+    node_thickness = st.sidebar.slider("Node Thickness", 10, 50, 20)
+    node_padding = st.sidebar.slider("Node Padding", 10, 50, 20)
+    link_opacity = st.sidebar.slider("Link Opacity", 0.1, 1.0, 0.6)
+
+    # Collect flows from file and text
     flows = []
-    if uploaded_file is not None:
+    if uploaded_file:
         file_flows = load_data_from_file(uploaded_file)
         flows.extend(file_flows)
 
@@ -189,9 +172,30 @@ def main():
         st.info("No flows available. Upload a file or input flows manually.")
         return
 
-    # Build Sankey diagram
+    # Build a list of unique node labels so we can show color pickers
+    unique_nodes = []
+    for s, amt, t in flows:
+        if s not in unique_nodes:
+            unique_nodes.append(s)
+        if t not in unique_nodes:
+            unique_nodes.append(t)
+
+    # Sort to have a deterministic list
+    unique_nodes = sorted(unique_nodes)
+
+    st.sidebar.header("Node Color Customization")
+    st.sidebar.write("Pick a color for each node:")
+    node_color_map = {}
+    for node in unique_nodes:
+        # Provide each node with a color picker; default can be any hex or pick a random color
+        color_default = "#1f77b4"  # or any default hex
+        chosen_color = st.sidebar.color_picker(f"{node}", color_default)
+        node_color_map[node] = chosen_color
+
+    # Now build and show the Sankey with user-selected colors
     fig = build_sankey(
         flows,
+        node_color_map=node_color_map,
         node_thickness=node_thickness,
         node_padding=node_padding,
         opacity=link_opacity
@@ -216,12 +220,11 @@ def main():
     st.markdown("""
     ---
     **Technical Integration**  
-    - **Plotly** is used for generating the Sankey diagram.  
-    - **Streamlit** for UI.  
-    - **GitHub** for version control and collaboration.  
+    - **Plotly** for Sankey generation  
+    - **Streamlit** for UI  
+    - **GitHub** for version control  
     ---
     """)
-
 
 if __name__ == "__main__":
     main()
