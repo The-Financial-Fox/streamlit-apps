@@ -8,123 +8,136 @@ st.set_page_config(page_title="Dynamic FP&A Dashboard", layout="wide")
 st.title("📊 Dynamic FP&A Dashboard")
 
 # Sidebar: File Upload
-st.sidebar.header("Upload Your Datasets")
-uploaded_files = st.sidebar.file_uploader(
-    "Upload one or more datasets (CSV/Excel)", type=["csv", "xlsx"], accept_multiple_files=True
+st.sidebar.header("Upload Your Dataset")
+uploaded_file = st.sidebar.file_uploader(
+    "Upload a CSV or Excel file", type=["csv", "xlsx"]
 )
 
-# Function to load datasets
-def load_dataset(file):
-    if file.name.endswith(".csv"):
-        return pd.read_csv(file)
-    else:
-        return pd.read_excel(file)
+# Load Dataset
+if uploaded_file:
+    # Load the file
+    try:
+        if uploaded_file.name.endswith(".csv"):
+            data = pd.read_csv(uploaded_file)
+        else:
+            data = pd.read_excel(uploaded_file)
+    except Exception as e:
+        st.error("Error loading file. Please check the format.")
+        st.stop()
 
-# Function to identify dataset type
-def identify_dataset_type(df):
-    if "Revenue" in df.columns and "Expenses" in df.columns:
-        return "Financials"
-    elif "Headcount" in df.columns:
-        return "Headcount"
-    elif "Sales" in df.columns:
-        return "Sales"
-    else:
-        return "General"
+    # Display dataset
+    st.subheader("Uploaded Dataset")
+    if st.checkbox("Show Raw Data"):
+        st.write(data)
 
-# Process uploaded files
-datasets = {}
-if uploaded_files:
-    for file in uploaded_files:
-        try:
-            df = load_dataset(file)
-            dataset_type = identify_dataset_type(df)
-            datasets[file.name] = {"data": df, "type": dataset_type}
-            st.sidebar.success(f"{file.name} loaded as {dataset_type}")
-        except Exception as e:
-            st.sidebar.error(f"Failed to load {file.name}: {e}")
+    # Sidebar: Select columns
+    st.sidebar.header("Visualization Options")
+    st.sidebar.subheader("Select Columns")
+    x_col = st.sidebar.selectbox("Select X-Axis Column", options=data.columns)
+    y_col = st.sidebar.selectbox("Select Y-Axis Column", options=data.columns)
 
-# If no files uploaded
-if not datasets:
-    st.warning("Please upload datasets to proceed.")
-    st.stop()
+    # Sidebar: Select Graph Type
+    st.sidebar.subheader("Select Graph Type")
+    graph_type = st.sidebar.selectbox(
+        "Choose Graph Type",
+        [
+            "Line Chart",
+            "Bar Chart",
+            "Scatter Plot",
+            "Histogram",
+            "Box Plot",
+            "Pie Chart",
+            "Heatmap",
+            "Area Chart",
+            "KDE Plot",
+            "Violin Plot",
+        ],
+    )
 
-# Dataset Selection
-selected_file = st.sidebar.selectbox("Select a dataset", options=datasets.keys())
-selected_dataset = datasets[selected_file]["data"]
-dataset_type = datasets[selected_file]["type"]
+    # Generate Graphs
+    st.header("Visualization")
 
-# Display Dataset Info
-st.subheader(f"Dataset: {selected_file} ({dataset_type})")
-if st.checkbox("Show Raw Data"):
-    st.write(selected_dataset)
+    # Handle different graph types
+    try:
+        if graph_type == "Line Chart":
+            fig, ax = plt.subplots()
+            sns.lineplot(data=data, x=x_col, y=y_col, ax=ax)
+            ax.set_title(f"Line Chart: {y_col} vs {x_col}")
+            st.pyplot(fig)
 
-# Visualizations
-st.header("Visualizations")
+        elif graph_type == "Bar Chart":
+            fig, ax = plt.subplots()
+            sns.barplot(data=data, x=x_col, y=y_col, ax=ax)
+            ax.set_title(f"Bar Chart: {y_col} vs {x_col}")
+            st.pyplot(fig)
 
-if dataset_type == "Financials":
-    # KPIs
-    st.subheader("Key Performance Indicators")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        total_revenue = selected_dataset['Revenue'].sum() if 'Revenue' in selected_dataset.columns else 0
-        st.metric("Total Revenue", f"${total_revenue:,.2f}")
-    with col2:
-        total_expenses = selected_dataset['Expenses'].sum() if 'Expenses' in selected_dataset.columns else 0
-        st.metric("Total Expenses", f"${total_expenses:,.2f}")
-    with col3:
-        profit_margin = (
-            (total_revenue - total_expenses) / total_revenue * 100
-            if total_revenue
-            else 0
-        )
-        st.metric("Profit Margin", f"{profit_margin:.2f}%")
+        elif graph_type == "Scatter Plot":
+            fig, ax = plt.subplots()
+            sns.scatterplot(data=data, x=x_col, y=y_col, ax=ax)
+            ax.set_title(f"Scatter Plot: {y_col} vs {x_col}")
+            st.pyplot(fig)
 
-    # Bar Plot: Revenue by Category
-    if "Category" in selected_dataset.columns:
-        fig, ax = plt.subplots()
-        sns.barplot(data=selected_dataset, x="Category", y="Revenue", ax=ax)
-        ax.set_title("Revenue by Category")
-        st.pyplot(fig)
+        elif graph_type == "Histogram":
+            fig, ax = plt.subplots()
+            sns.histplot(data=data[x_col], bins=20, kde=True, ax=ax)
+            ax.set_title(f"Histogram: {x_col}")
+            st.pyplot(fig)
 
-elif dataset_type == "Headcount":
-    # KPIs
-    st.subheader("Key Headcount Metrics")
-    col1, col2 = st.columns(2)
-    with col1:
-        total_headcount = selected_dataset["Headcount"].sum() if "Headcount" in selected_dataset.columns else 0
-        st.metric("Total Headcount", f"{total_headcount}")
-    with col2:
-        avg_headcount = selected_dataset["Headcount"].mean() if "Headcount" in selected_dataset.columns else 0
-        st.metric("Average Headcount", f"{avg_headcount:.2f}")
+        elif graph_type == "Box Plot":
+            fig, ax = plt.subplots()
+            sns.boxplot(data=data, x=x_col, y=y_col, ax=ax)
+            ax.set_title(f"Box Plot: {y_col} by {x_col}")
+            st.pyplot(fig)
 
-    # Line Plot: Headcount Over Time
-    if "Year" in selected_dataset.columns and "Headcount" in selected_dataset.columns:
-        fig, ax = plt.subplots()
-        sns.lineplot(data=selected_dataset, x="Year", y="Headcount", marker="o", ax=ax)
-        ax.set_title("Headcount Trend Over Years")
-        st.pyplot(fig)
+        elif graph_type == "Pie Chart":
+            if data[x_col].nunique() <= 10:  # Limit pie charts to 10 unique categories
+                pie_data = data[x_col].value_counts()
+                fig, ax = plt.subplots()
+                ax.pie(pie_data, labels=pie_data.index, autopct="%1.1f%%")
+                ax.set_title(f"Pie Chart: Distribution of {x_col}")
+                st.pyplot(fig)
+            else:
+                st.warning("Pie charts are limited to columns with 10 or fewer unique values.")
 
-elif dataset_type == "Sales":
-    # KPIs
-    st.subheader("Key Sales Metrics")
-    col1, col2 = st.columns(2)
-    with col1:
-        total_sales = selected_dataset["Sales"].sum() if "Sales" in selected_dataset.columns else 0
-        st.metric("Total Sales", f"${total_sales:,.2f}")
-    with col2:
-        avg_sales = selected_dataset["Sales"].mean() if "Sales" in selected_dataset.columns else 0
-        st.metric("Average Sales", f"${avg_sales:.2f}")
+        elif graph_type == "Heatmap":
+            if data.select_dtypes(include="number").shape[1] > 1:  # Ensure numeric columns are available
+                fig, ax = plt.subplots()
+                sns.heatmap(data.corr(), annot=True, cmap="coolwarm", ax=ax)
+                ax.set_title("Heatmap: Correlation Matrix")
+                st.pyplot(fig)
+            else:
+                st.warning("Heatmaps require at least two numeric columns.")
 
-    # Scatter Plot: Sales by Region
-    if "Region" in selected_dataset.columns and "Sales" in selected_dataset.columns:
-        fig, ax = plt.subplots()
-        sns.scatterplot(data=selected_dataset, x="Region", y="Sales", ax=ax)
-        ax.set_title("Sales by Region")
-        st.pyplot(fig)
+        elif graph_type == "Area Chart":
+            fig, ax = plt.subplots()
+            data.sort_values(x_col, inplace=True)
+            ax.fill_between(data[x_col], data[y_col], alpha=0.5)
+            ax.set_title(f"Area Chart: {y_col} vs {x_col}")
+            ax.set_xlabel(x_col)
+            ax.set_ylabel(y_col)
+            st.pyplot(fig)
+
+        elif graph_type == "KDE Plot":
+            fig, ax = plt.subplots()
+            sns.kdeplot(data=data, x=x_col, ax=ax)
+            ax.set_title(f"KDE Plot: Distribution of {x_col}")
+            st.pyplot(fig)
+
+        elif graph_type == "Violin Plot":
+            fig, ax = plt.subplots()
+            sns.violinplot(data=data, x=x_col, y=y_col, ax=ax)
+            ax.set_title(f"Violin Plot: {y_col} by {x_col}")
+            st.pyplot(fig)
+
+        else:
+            st.warning("Invalid graph type selected.")
+
+    except Exception as e:
+        st.error(f"Error generating graph: {e}")
 
 else:
-    st.info("No specific visualizations available for this dataset type.")
+    st.warning("Please upload a dataset to get started.")
 
 # Footer
 st.markdown("---")
-st.markdown("Developed by [Your Name](https://github.com/your-repo)")
+st.markdown("Developed by [Christian Martinez](https://github.com/your-repo)")
