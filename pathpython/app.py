@@ -15,10 +15,42 @@ days_plan = {
     1: {
         "title": "Day 1: Getting Started with Python & Google Colab",
         "content": """
-- **Overview**: Learn how to set up a Google Colab notebook and run basic Python code.
-- **Mini Project**: Write a simple "Hello, FP&A World!" program, then play with basic arithmetic operations.
-        """
+**Overview**  
+- Learn how to set up a Google Colab notebook to write and run basic Python code.  
+- Get introduced to common Python tools used in Finance.  
+
+**Step-by-Step**  
+1. **Create a Google Account**: If you don’t already have one, sign up at [accounts.google.com](https://accounts.google.com).  
+2. **Open Google Colab**: Go to [colab.research.google.com](https://colab.research.google.com).  
+3. **Create a New Notebook**: Click on `New Notebook`.  
+4. **Basic Python Syntax**:  
+   - Printing statements: `print("Hello, FP&A World!")`  
+   - Variables:  
+     ```python
+     revenue = 1000
+     expenses = 400
+     profit = revenue - expenses
+     print("Profit =", profit)
+     ```
+   - Simple arithmetic: `2 + 2`, `10 * 5`, `100 / 10`.
+
+**Why Python for Finance?**  
+- **Automation**: Python can automate routine tasks like merging Excel files, generating reports, or scraping financial data.  
+- **Analysis & Modeling**: Libraries like `pandas` and `numpy` make it easy to handle large datasets, while tools like `scikit-learn` or `Prophet` help with forecasting.  
+- **Visualization**: Libraries such as `matplotlib`, `seaborn`, and `plotly` help turn data into insights.
+
+**Mini Project**  
+1. **Hello FP&A World**: In your new Colab notebook, write a simple `print("Hello, FP&A World!")`.  
+2. **Basic Arithmetic**: Create two variables, `revenue` and `expenses`. Subtract them to find `profit`. Play around by changing their values and printing the results.  
+3. **Reflection**: Write short comments in your notebook about how this could be used in a real FP&A scenario (e.g., tracking daily, weekly, or monthly numbers).  
+
+**Additional Resources**  
+- [Google Colab Official Guide](https://colab.research.google.com/notebooks/intro.ipynb)  
+- [W3Schools Python Tutorial](https://www.w3schools.com/python/) (for quick Python refreshers)  
+"""
     },
+    
+    # The rest of the days remain as they were
     2: {
         "title": "Day 2: Handling Your First Python Errors",
         "content": """
@@ -26,6 +58,8 @@ days_plan = {
 - **Mini Project**: Purposefully generate errors (e.g., syntax errors) and practice debugging them.
         """
     },
+    # ... Continue with days 3 through 30 as you already have them ...
+
     3: {
         "title": "Day 3: ChatGPT for Generating Python Code",
         "content": """
