@@ -248,6 +248,47 @@ This is the Full Path by Christian Martinez & Nicolas Boucher
    plt.xlabel("Month")
    plt.ylabel("Revenue in USD")
    plt.show()
+
+import streamlit as st
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Example DataFrame
+data = {
+    "Month": ["January", "February", "March", "April"],
+    "Revenue": [1000, 1500, 1200, 1700]
+}
+df = pd.DataFrame(data)
+
+# Display Python code
+code = """
+months = df["Month"]
+revenue = df["Revenue"]
+
+plt.bar(months, revenue)
+plt.title("Monthly Revenue")
+plt.xlabel("Month")
+plt.ylabel("Revenue in USD")
+plt.show()
+"""
+st.code(code, language="python")
+
+# Render the plot
+months = df["Month"]
+revenue = df["Revenue"]
+
+fig, ax = plt.subplots()
+ax.bar(months, revenue)
+ax.set_title("Monthly Revenue")
+ax.set_xlabel("Month")
+ax.set_ylabel("Revenue in USD")
+
+# Display the plot in Streamlit
+st.pyplot(fig)
+
+
+
+   
 Styling & Seaborn:
 You can do sns.barplot(x="Month", y="Revenue", data=df) for a quick bar chart.
 Customize color, labels, figure size, etc.
