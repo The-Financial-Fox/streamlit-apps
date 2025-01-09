@@ -1,4 +1,6 @@
 import streamlit as st
+import matplotlib.pyplot as plt
+import pandas as pd
 
 # ---------------------------
 # Data Structure for 30 Days
@@ -232,27 +234,19 @@ This is the Full Path by Christian Martinez & Nicolas Boucher
 - Learn how to create a bar chart to compare categories (e.g., monthly revenue, expenses, or product sales).
 
 **Step-by-Step**  
-1. **Set Up Your Environment**:  
-   - `import pandas as pd`  
-   - `import matplotlib.pyplot as plt` (for a basic start)
-   - Or `import seaborn as sns` for a more stylish default theme.
-2. **Load Your Data**:  
-   - A DataFrame with columns like `Month`, `Revenue`, and `Expenses`.
-3. **Basic Bar Chart** (matplotlib example):  
+1. **Install Matplotlib**: If you're using Colab, run `!pip install matplotlib` in a code cell.  
+2. **Basic Bar Chart**:  
    ```python
-   months = df["Month"]
-   revenue = df["Revenue"]
+   import matplotlib.pyplot as plt
+
+   months = ["January", "February", "March", "April"]
+   revenue = [1000, 1500, 1200, 1700]
 
    plt.bar(months, revenue)
    plt.title("Monthly Revenue")
    plt.xlabel("Month")
    plt.ylabel("Revenue in USD")
    plt.show()
-
-import streamlit as st
-import matplotlib.pyplot as plt
-import pandas as pd
-
 
    
 Styling & Seaborn:
