@@ -1,4 +1,4 @@
-import streamlit as st
+    import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -12,6 +12,16 @@ import pandas as pd
 #   Phase 4 (Days 19-24): Forecasting
 #   Phase 5 (Days 25-30): Advanced
 # Each day includes a short description + a mini project idea.
+
+seo_metadata = """
+<head>
+    <title>Learn Python for Finance in 30 Days</title>
+    <meta name="description" content="This is our path for you to learn Python">
+    <meta property="og:title" content="Python for Finance">
+    <meta property="og:description" content="Python for Finance">
+</head>
+"""
+
 
 days_plan = {
     1: {
@@ -263,12 +273,78 @@ Label everything clearly and draw a quick conclusion (Which month had the highes
 
 
 """ },
-    8: {
+  8: {
         "title": "Day 8: Seaborn Library Essentials",
         "content": """
-- **Overview**: Dive deeper into `seaborn` for more advanced visuals (e.g., count plot, box plot).
-- **Mini Project**: Visualize a dataset's distribution using `seaborn`'s histogram or density plot.
-        """
+**Overview**  
+- Learn how to create visually appealing charts with **Seaborn**, which provides a high-level interface for drawing attractive statistical graphics.
+- Explore Seaborn’s built-in themes, color palettes, and advanced chart types to uncover insights in FP&A data.
+
+**Step-by-Step**  
+1. **Install & Import**  
+   - If needed, install in Colab/terminal: `!pip install seaborn`.
+   - Import:  
+     ```python
+     import pandas as pd
+     import seaborn as sns
+     import matplotlib.pyplot as plt
+     ```
+   - Optionally set a style for Seaborn:
+     ```python
+     sns.set_style("whitegrid")
+     ```
+2. **Load Your Data**  
+   - Example: A CSV with columns like `Month`, `Region`, `Revenue`, `Expenses`.
+   - `df = pd.read_csv("financial_data.csv")`
+3. **Create a Basic Chart**  
+   - **Barplot** (for categorical data):
+     ```python
+     sns.barplot(x="Month", y="Revenue", data=df)
+     plt.title("Monthly Revenue")
+     plt.show()
+     ```
+   - **Line Plot** (trends over time):
+     ```python
+     sns.lineplot(x="Month", y="Revenue", data=df, marker="o")
+     plt.title("Revenue Trend")
+     plt.show()
+     ```
+4. **Distribution & Box Plots**  
+   - Distribution plot for `Revenue`:
+     ```python
+     sns.histplot(df["Revenue"], kde=True)
+     plt.title("Distribution of Revenue")
+     plt.show()
+     ```
+   - Box plot comparing `Revenue` by `Region`:
+     ```python
+     sns.boxplot(x="Region", y="Revenue", data=df)
+     plt.title("Revenue by Region")
+     plt.show()
+     ```
+5. **Customization**  
+   - Adjust figure size:  
+     ```python
+     plt.figure(figsize=(10,6))
+     ```
+   - Change color palettes:  
+     ```python
+     sns.set_palette("viridis")  # or "Blues", "coolwarm", etc.
+     ```
+
+**Mini Project**  
+1. **Deep Dive into Seaborn**:
+   - Pick a finance dataset (e.g., monthly or quarterly data).
+   - Create at least **three** different plot types (bar, line, box, histogram, etc.).
+   - Experiment with **styling** (custom palettes, figure sizes).
+2. **Analysis**:
+   - Summarize which visual best communicates key insights (e.g., outliers, trends, comparisons).
+
+**Additional Resources**  
+- [Seaborn Official Documentation](https://seaborn.pydata.org/)  
+- [Matplotlib vs. Seaborn (Comparison)](https://www.geeksforgeeks.org/differences-between-seaborn-and-matplotlib/)  
+- [Kaggle Datasets](https://www.kaggle.com/datasets) (for extra practice data)  
+      """
     },
     9: {
         "title": "Day 9: Box Plot for Statistical Analysis",
