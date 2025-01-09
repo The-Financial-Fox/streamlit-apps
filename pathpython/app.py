@@ -46,7 +46,7 @@ days_plan = {
 
 **Additional Resources**  
 - [Google Colab Official Guide](https://colab.research.google.com/notebooks/intro.ipynb)  
-- [W3Schools Python Tutorial](https://www.w3schools.com/python/) (for quick Python refreshers)  
+- [10 Ways to Use Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_how-to-use-python-for-fpa-by-christian-martinez-activity-7275419452328837120-9cYD?utm_source=share&utm_medium=member_desktop) (for quick Python refreshers)  
 """
     },
     
@@ -54,18 +54,58 @@ days_plan = {
     2: {
         "title": "Day 2: Handling Your First Python Errors",
         "content": """
-- **Overview**: Understand common error messages and how to ask ChatGPT (or other resources) for help.
-- **Mini Project**: Purposefully generate errors (e.g., syntax errors) and practice debugging them.
-        """
+**Overview**  
+- Learn about common Python error messages (SyntaxError, NameError, TypeError, etc.).
+- Practice asking ChatGPT or using search engines for help in debugging.
+
+**Step-by-Step**  
+1. **Intentional Errors**: Write a few lines of code that produce different errors (e.g., missing parenthesis, misspelled variable name).  
+2. **Debugging**: For each error, see what the traceback says. Google the error message or ask ChatGPT to get tips on fixing it.  
+3. **Basic Fixes**: Once you know how to fix the error, modify your code and run it again.  
+
+**Mini Project**  
+- **“Error Buffet” Notebook**: Create a Colab notebook called `day2_errors.ipynb` and deliberately introduce:  
+  1. A **SyntaxError** (e.g., missing a `:` or parenthesis).  
+  2. A **NameError** (calling a variable that doesn’t exist).  
+  3. A **TypeError** (trying to add a string and an integer).  
+- Write down how you **debugged** each one.  
+
+**Additional Resources**  
+- [Python for FP&A and Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)  
+- [Python for Beginners / Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)  
+- [A Simple Guide of Python for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)  
+- [Python with ChatGPT for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)  
+"""
     },
-    # ... Continue with days 3 through 30 as you already have them ...
 
     3: {
         "title": "Day 3: ChatGPT for Generating Python Code",
         "content": """
-- **Overview**: Explore how to use ChatGPT to scaffold simple scripts for finance tasks.
-- **Mini Project**: Ask ChatGPT to create a basic script that calculates a monthly budget or a savings plan.
-        """
+**Overview**  
+- Explore how to leverage ChatGPT to scaffold simple scripts and solve coding challenges for finance.
+- Learn to prompt ChatGPT effectively: providing clear context, specifying inputs/outputs, etc.
+
+**Step-by-Step**  
+1. **Intro to Prompt Engineering**:  
+   - Be specific about what you want ChatGPT to generate.  
+   - Provide examples of input data and desired output.  
+2. **Ask ChatGPT for a Starter Script**:  
+   - Example: “ChatGPT, generate a Python script that calculates and prints the monthly budget surplus or deficit.”  
+3. **Iterate**:  
+   - If the script is missing something, refine your prompt with more details.  
+
+**Mini Project**  
+- **Budget Calculator**:  
+  1. Use ChatGPT to generate a simple script that asks for user input (`monthly_income`, `monthly_expenses`) and outputs the difference.  
+  2. Copy/paste that generated code into Colab or a `.py` file and run it.  
+  3. Document any modifications you made to the ChatGPT output.  
+
+**Additional Resources**  
+- [Python for FP&A and Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)  
+- [Python for Beginners / Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)  
+- [A Simple Guide of Python for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)  
+- [Python with ChatGPT for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)  
+"""
     },
     4: {
         "title": "Day 4: Using Python Libraries for Finance",
