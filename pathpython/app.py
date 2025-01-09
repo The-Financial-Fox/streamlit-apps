@@ -47,7 +47,9 @@ days_plan = {
 **Additional Resources**  
 - [Google Colab Official Guide](https://colab.research.google.com/notebooks/intro.ipynb)  
 - [10 Ways to Use Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_how-to-use-python-for-fpa-by-christian-martinez-activity-7275419452328837120-9cYD?utm_source=share&utm_medium=member_desktop) (for quick Python refreshers)  
-- This is the Full Path by Christian Martinez & Nicolas Boucher
+- [Python in Excel Guide](https://nicolasboucher.online/product/python-in-excel-guide/)
+
+This is the Full Path by Christian Martinez & Nicolas Boucher
 
 ![Python Path](https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/main/pathpython/pythonpath.jpg)
 
