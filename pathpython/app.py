@@ -202,17 +202,86 @@ This is the Full Path by Christian Martinez & Nicolas Boucher
     6: {
         "title": "Day 6: Python as a Pivot Table",
         "content": """
-- **Overview**: Practice grouping and summarizing data with `pandas` groupby (similar to pivot tables).
-- **Mini Project**: Create a pivot table-like summary of sales data grouped by product or region.
+**Overview**  
+- Learn how to replicate Excel-like pivot table functionality using Python’s `pandas`.
+- Use grouping, aggregating, and pivot techniques to summarize financial data (sales, expenses, budget vs. actuals).
+
+**Step-by-Step**  
+1. **Load a Dataset**:  
+   - Use `pandas.read_csv("your_financial_data.csv")` (or `.read_excel()`).  
+2. **Group By & Aggregation**:  
+   - Example: `df.groupby("Region")["Revenue"].sum()` to get total revenue by region.
+   - Combine multiple fields:  
+     ```python
+     df.groupby(["Region", "Product"])[["Revenue", "Expenses"]].sum()
+     ```
+3. **Pivot Tables**:  
+   - Use `pandas.pivot_table(df, index="Region", columns="Product", values="Revenue", aggfunc="sum")`
+   - Try different `aggfunc` values like `"mean"`, `"count"`, or a custom function.
+4. **Formatting & Insights**:  
+   - Sort values, rename columns, or export the result to a new Excel file.
+
+**Mini Project**  
+- **Pivot Table Challenge**:  
+  1. Load a dataset with columns like `Region`, `Month`, `Revenue`, `Expenses`.  
+  2. Use `groupby` or `pivot_table` to find total revenue and expenses by month and by region.  
+  3. Print or export your summarized data to verify.  
+
+**Additional Resources**  
+- [7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_7-python-libraries-i-believe-every-fpa-professional-activity-7232248897786564608-5A5x?utm_source=share&utm_medium=member_desktop)
+- [Python for FP&A and Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)
+- [Python for Beginners / Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)
+- [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
+- [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
         """
     },
+
     7: {
         "title": "Day 7: Simple Bar Chart in Python",
         "content": """
-- **Overview**: Learn the basics of data visualization with libraries like `matplotlib` or `seaborn`.
-- **Mini Project**: Plot a bar chart comparing expenses across different months.
-        """
-    },
+**Overview**  
+- Explore fundamental data visualization techniques in Python using libraries like **matplotlib**, **seaborn**, or **plotly**.
+- Learn how to create a bar chart to compare categories (e.g., monthly revenue, expenses, or product sales).
+
+**Step-by-Step**  
+1. **Set Up Your Environment**:  
+   - `import pandas as pd`  
+   - `import matplotlib.pyplot as plt` (for a basic start)
+   - Or `import seaborn as sns` for a more stylish default theme.
+2. **Load Your Data**:  
+   - A DataFrame with columns like `Month`, `Revenue`, and `Expenses`.
+3. **Basic Bar Chart** (matplotlib example):  
+   ```python
+   months = df["Month"]
+   revenue = df["Revenue"]
+
+   plt.bar(months, revenue)
+   plt.title("Monthly Revenue")
+   plt.xlabel("Month")
+   plt.ylabel("Revenue in USD")
+   plt.show()
+Styling & Seaborn:
+You can do sns.barplot(x="Month", y="Revenue", data=df) for a quick bar chart.
+Customize color, labels, figure size, etc.
+Compare Two Series (optional):
+Plot revenue and expenses side by side, or use a stacked bar chart to see them together.
+Mini Project
+
+Revenue vs. Expenses Bar Chart:
+Create a small dataset with Month, Revenue, and Expenses.
+Plot them on a single bar chart or two separate subplots.
+Label everything clearly and draw a quick conclusion (Which month had the highest net profit?).
+Additional Resources
+
+7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)
+
+Python for FP&A and Finance
+
+Python for Beginners / Finance
+
+A Simple Guide of Python for Finance
+
+Python with ChatGPT for Finance """ },
     8: {
         "title": "Day 8: Seaborn Library Essentials",
         "content": """
