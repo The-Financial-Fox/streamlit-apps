@@ -412,19 +412,153 @@ plt.show()
 """
 
     },
-    10: {
-        "title": "Day 10: Correlation Analysis with Heatmap",
-        "content": """
-- **Overview**: Learn how to compute correlations and visualize them via heatmaps.
-- **Mini Project**: Use a sample financial dataset to create a heatmap of correlations among variables.
-        """
+10: {
+    "title": "Day 10: Correlation Analysis with Heatmap",
+    "content": """
+- **Overview**: 
+  Gain insights into the relationships between financial variables by computing correlations and visualizing them using heatmaps. Learn to identify strong, weak, positive, and negative correlations to support data-driven decision-making.
+
+- **Key Objectives**:
+  1. Understand the concept of correlation and its significance in financial analysis.
+  2. Learn to calculate correlation coefficients using Python.
+  3. Create and interpret heatmaps for visualizing correlations effectively.
+
+- **Steps and Code Samples**:
+  1. **Load the Dataset**:
+     Start by loading a sample financial dataset (e.g., stock prices, sales data, or economic indicators).
+     ```python
+     import pandas as pd
+     import seaborn as sns
+     import matplotlib.pyplot as plt
+
+     # Load dataset
+     data = pd.read_csv('financial_data.csv')
+     print(data.head())
+     ```
+
+  2. **Compute Correlation Matrix**:
+     Calculate the correlation matrix to analyze relationships between numerical variables.
+     ```python
+     correlation_matrix = data.corr()
+     print(correlation_matrix)
+     ```
+
+  3. **Visualize with Heatmap**:
+     Use the `seaborn` library to create a heatmap for a clear visualization of the correlation matrix.
+     ```python
+     plt.figure(figsize=(10, 8))
+     sns.heatmap(correlation_matrix, annot=True, fmt='.2f', cmap='coolwarm', cbar=True)
+     plt.title('Correlation Heatmap')
+     plt.show()
+     ```
+
+  4. **Interpret Results**:
+     - Identify highly correlated variables (e.g., close to +1 or -1).
+     - Note potential multicollinearity in predictors for regression models.
+     - Use insights to guide financial strategy or data preprocessing.
+
+- **Mini Project**:
+  1. Use a financial dataset, such as historical stock prices or company KPIs.
+  2. Compute correlations among variables like revenue, profit, expense, or stock returns.
+  3. Create a detailed heatmap and write a brief analysis of key findings, such as:
+     - Which variables are highly correlated?
+     - Are there surprising or unexpected relationships?
+     - How can these insights improve forecasting or decision-making?
+
+- **Additional Resources**:
+  - [Seaborn Heatmap Documentation](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
+  - [Understanding Correlation in Finance](https://example-finance-correlation.com)
+
+"""
+
     },
-    11: {
-        "title": "Day 11: Customizing Any Data Visualization",
-        "content": """
+ 11: {
+    "title": "Day 11: Customizing Any Data Visualization",
+    "content": """
 - **Overview**: Adjust labels, colors, legends, and style to build compelling dashboards.
 - **Mini Project**: Take a bar chart or line chart and fully customize it (title, axis labels, color palette).
-        """
+
+# Detailed Instructions:
+
+## Learning Goals:
+1. Understand the importance of effective visualizations for financial data.
+2. Learn how to use Python libraries such as Matplotlib and Seaborn to enhance plots.
+3. Develop skills to tailor charts for specific audiences (e.g., executives vs. analysts).
+
+## Steps:
+1. **Set Up Your Environment**:
+    - Install required libraries: `pip install matplotlib seaborn pandas`
+    - Import necessary modules:
+      ```python
+      import matplotlib.pyplot as plt
+      import seaborn as sns
+      import pandas as pd
+      ```
+
+2. **Choose a Dataset**:
+    - Use a financial dataset (e.g., revenue, profit, expenses over time).
+    - Example:
+      ```python
+      data = {
+          'Month': ['Jan', 'Feb', 'Mar', 'Apr'],
+          'Revenue': [20000, 25000, 22000, 27000],
+          'Expenses': [15000, 18000, 16000, 19000]
+      }
+      df = pd.DataFrame(data)
+      ```
+
+3. **Create a Basic Plot**:
+    - Start with a simple line chart:
+      ```python
+      plt.plot(df['Month'], df['Revenue'], label='Revenue')
+      plt.plot(df['Month'], df['Expenses'], label='Expenses')
+      ```
+
+4. **Add Customizations**:
+    - Title and labels:
+      ```python
+      plt.title('Monthly Financial Overview', fontsize=16)
+      plt.xlabel('Month', fontsize=12)
+      plt.ylabel('Amount ($)', fontsize=12)
+      ```
+    - Customize colors and styles:
+      ```python
+      sns.set_style('whitegrid')
+      plt.plot(df['Month'], df['Revenue'], color='green', linestyle='--', marker='o')
+      plt.plot(df['Month'], df['Expenses'], color='red', linestyle='-', marker='x')
+      ```
+    - Add a legend:
+      ```python
+      plt.legend(loc='upper left')
+      ```
+
+5. **Enhance for Dashboards**:
+    - Annotate points with exact values:
+      ```python
+      for i, val in enumerate(df['Revenue']):
+          plt.text(df['Month'][i], val, f"{val}", ha='center', va='bottom', fontsize=10)
+      ```
+    - Adjust layout for readability:
+      ```python
+      plt.tight_layout()
+      ```
+
+6. **Save and Share**:
+    - Save your plot for presentations:
+      ```python
+      plt.savefig('financial_overview.png', dpi=300)
+      ```
+    - Show the plot:
+      ```python
+      plt.show()
+      ```
+
+## Stretch Goals:
+- Use Seaborn to create a heatmap of financial metrics.
+- Experiment with interactive libraries like Plotly for enhanced interactivity.
+- Add comparison benchmarks or trend lines.
+
+"""
     },
     12: {
         "title": "Day 12: Creating Your First Dashboard using Plotly",
