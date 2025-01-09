@@ -13,16 +13,24 @@ import pandas as pd
 #   Phase 5 (Days 25-30): Advanced
 # Each day includes a short description + a mini project idea.
 
-seo_metadata = """
-<head>
-    <title>Learn Python for Finance in 30 Days</title>
-    <meta name="description" content="This is our path for you to learn Python">
-    <meta property="og:title" content="Python for Finance">
-    <meta property="og:description" content="Python for Finance">
-</head>
-"""
-
-
+# Inject custom SEO metadata into the app
+components.html(
+    """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Learn Python for Finance in 30 Days</title>
+        <meta name="description" content="This is our path for you to learn Python">
+        <meta property="og:title" content="Python for Finance">
+        <meta property="og:description" content="Learn Python and its applications in finance in 30 days.">
+        <meta property="og:image" content="https://example.com/path-to-your-image.jpg">
+        <meta property="og:url" content="https://pythonfinancelearningpath.streamlit.app">
+        <meta name="twitter:card" content="summary_large_image">
+    </head>
+    </html>
+    """,
+    height=0  # Set height to 0 so it doesn't show extra space
+)
 days_plan = {
     1: {
         "title": "Day 1: Getting Started with Python & Google Colab",
