@@ -191,13 +191,7 @@ This is the Full Path by Christian Martinez & Nicolas Boucher
    - If you had to do this manually every month, how much time would it take?
    - Write a short note in your notebook on how Python can automate this.
 
-**Additional Resources**  
-- [7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_7-python-libraries-i-believe-every-fpa-professional-activity-7232248897786564608-5A5x?utm_source=share&utm_medium=member_desktop)
-- [Python for FP&A and Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)
-- [Python for Beginners / Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)
-- [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
-- [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
-        """
+"""
     },
     6: {
         "title": "Day 6: Python as a Pivot Table",
@@ -227,13 +221,7 @@ This is the Full Path by Christian Martinez & Nicolas Boucher
   2. Use `groupby` or `pivot_table` to find total revenue and expenses by month and by region.  
   3. Print or export your summarized data to verify.  
 
-**Additional Resources**  
-- [7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_7-python-libraries-i-believe-every-fpa-professional-activity-7232248897786564608-5A5x?utm_source=share&utm_medium=member_desktop)
-- [Python for FP&A and Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)
-- [Python for Beginners / Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)
-- [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
-- [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
-        """
+"""
     },
 
     7: {
@@ -271,17 +259,9 @@ Revenue vs. Expenses Bar Chart:
 Create a small dataset with Month, Revenue, and Expenses.
 Plot them on a single bar chart or two separate subplots.
 Label everything clearly and draw a quick conclusion (Which month had the highest net profit?).
-Additional Resources
 
-7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)
 
-Python for FP&A and Finance
-
-Python for Beginners / Finance
-
-A Simple Guide of Python for Finance
-
-Python with ChatGPT for Finance """ },
+""" },
     8: {
         "title": "Day 8: Seaborn Library Essentials",
         "content": """
