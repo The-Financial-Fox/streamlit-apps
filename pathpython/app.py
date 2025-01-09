@@ -410,7 +410,6 @@ plt.show()
   - [Seaborn Box Plot Documentation](https://seaborn.pydata.org/generated/seaborn.boxplot.html)
   - [Using Python for Financial Analytics](https://www.analyticsvidhya.com/blog/2020/01/finance-analytics-python/)
 """
-}
 
     },
     10: {
