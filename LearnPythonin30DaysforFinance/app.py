@@ -1,5 +1,6 @@
 import streamlit as st
 import importlib
+import os
 
 # Page Configuration
 st.set_page_config(
@@ -26,15 +27,35 @@ st.write(f"## {selected_day}: Mini-Project")
 try:
     day_number = int(selected_day.split()[1])
     module_name = f"mini_projects.day{day_number}"
-    print(f"Attempting to import: {module_name}")  # Debug statement
+    module_path = f"mini_projects/day{day_number}.py"
+
+    # Debugging: Check if the file exists
+    if not os.path.exists(module_path):
+        raise FileNotFoundError(f"File {module_path} not found!")
+
+    # Debugging: Attempt to import the module
+    print(f"Attempting to import: {module_name}")
     day_module = importlib.import_module(module_name)
-    print(f"Successfully imported: {module_name}")  # Debug statement
-    day_module.run()  # Each day's script must have a `run()` function
-except ModuleNotFoundError:
+    print(f"Successfully imported: {module_name}")
+
+    # Call the run() function in the imported module
+    if hasattr(day_module, 'run'):
+        print(f"Running run() function for {module_name}")
+        day_module.run()
+    else:
+        raise AttributeError(f"The module '{module_name}' does not contain a 'run()' function.")
+except ModuleNotFoundError as e:
     st.error("🚧 Mini-project for this day is not yet available!")
+    print(f"ModuleNotFoundError: {e}")
+except FileNotFoundError as e:
+    st.error("🚧 Mini-project file is missing!")
+    print(f"FileNotFoundError: {e}")
+except AttributeError as e:
+    st.error("🚧 The selected day's module does not contain a 'run()' function!")
+    print(f"AttributeError: {e}")
 except Exception as e:
     st.error(f"❌ An error occurred: {e}")
-
+    print(f"General Exception: {e}")
 
 # Footer
 st.markdown("---")
