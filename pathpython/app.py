@@ -372,19 +372,20 @@ days_plan = {
 
 def main():
     st.title("30 Days to Master Python for FP&A")
-    st.write(
-        """
-        This interactive guide is based on the Path to Master Python by Christian Martinez & Nicolas Boucher.
-        Each day includes a brief overview of what to learn plus a mini project to sharpen your skills.
-        """
-    )
 
-    # Let user pick a day in the sidebar
-    day = st.sidebar.selectbox("Select a day to view details", list(days_plan.keys()))
-
-    st.header(days_plan[day]["title"])
-    st.write(days_plan[day]["content"])
-
+    # 1) Create a list of “Day 1”, “Day 2”, etc.
+    day_options = [f"Day {day_num}" for day_num in days_plan.keys()]
+    
+    # 2) Put the selectbox in the main area (NOT in the sidebar)
+    selected_label = st.selectbox("Select a day to view details", day_options)
+    
+    # 3) Convert the selected label back to an integer key (e.g., "Day 1" → 1)
+    #    We assume the label format is "Day X", so split and parse:
+    selected_day = int(selected_label.split()[1])
+    
+    # 4) Display content
+    st.header(days_plan[selected_day]["title"])
+    st.write(days_plan[selected_day]["content"])
 
 if __name__ == "__main__":
     main()
