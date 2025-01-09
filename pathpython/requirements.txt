@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+yfinance
+matplotlib
+seaborn
+scikit-learn
+prophet  # or fbprophet, depending on the environment
+plotly
+openpyxl
