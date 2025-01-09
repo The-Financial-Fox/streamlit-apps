@@ -143,6 +143,9 @@ days_plan = {
 - [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
 - [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
         """
+![Python Libraries](https://github.com/The-Financial-Fox/streamlit-apps/blob/main/pathpython/Screenshot%202025-01-09%20202949.png)
+
+        
     },
 
     5: {
