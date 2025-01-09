@@ -355,12 +355,63 @@ Label everything clearly and draw a quick conclusion (Which month had the highes
 - [Kaggle Datasets](https://www.kaggle.com/datasets) (for extra practice data)  
       """
     },
-    9: {
-        "title": "Day 9: Box Plot for Statistical Analysis",
-        "content": """
-- **Overview**: Understand box plots, outliers, quartiles, and how to interpret them.
-- **Mini Project**: Plot a box plot of monthly sales or budget data to see outliers.
-        """
+  9: {
+    "title": "Day 9: Box Plot for Statistical Analysis",
+    "content": """
+- **Overview**: Box plots (also known as box-and-whisker plots) provide a visual representation of data distribution. They help identify the median, quartiles, and potential outliers in a dataset. Understanding box plots is essential for detecting anomalies and gaining insights into financial or operational data.
+
+- **Step-by-Step**:
+  1. **Introduction to Box Plots**: A box plot consists of:
+     - **Box**: Spans the interquartile range (IQR), showing the 25th to the 75th percentiles.
+     - **Median Line**: The line inside the box, representing the 50th percentile.
+     - **Whiskers**: Extend to the smallest and largest values within 1.5 * IQR.
+     - **Outliers**: Points outside the whiskers.
+  2. **Prepare Your Data**: Use a financial dataset (e.g., monthly sales, expenses, or revenue). Ensure the data is in a clean format (e.g., a CSV file or a DataFrame).
+  3. **Plot a Box Plot in Python**:
+
+- **Code Example**:
+```python
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+
+# Sample financial dataset
+data = {
+    'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    'Revenue': [1200, 1100, 1300, 1150, 1400, 1250]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Create a box plot using Seaborn
+plt.figure(figsize=(8, 6))
+sns.boxplot(y=df['Revenue'])
+plt.title("Monthly Revenue Distribution")
+plt.ylabel("Revenue ($)")
+plt.show()
+```
+
+- **Interpretation**:
+  - Analyze the box plot:
+    - Check the median to understand central tendencies.
+    - Look for outliers (points outside the whiskers).
+    - Examine the spread of the box to assess variability.
+
+- **Mini Project**:
+  1. Use your own data (e.g., budget, sales, or expenses).
+  2. Plot a box plot to analyze outliers and trends.
+  3. Write a short report on:
+     - Any anomalies you identified.
+     - How these insights could influence decisions (e.g., handling outliers).
+
+- **Additional Resources**:
+  - [Box Plots Explained](https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51)
+  - [Seaborn Box Plot Documentation](https://seaborn.pydata.org/generated/seaborn.boxplot.html)
+  - [Using Python for Financial Analytics](https://www.analyticsvidhya.com/blog/2020/01/finance-analytics-python/)
+"""
+}
+
     },
     10: {
         "title": "Day 10: Correlation Analysis with Heatmap",
