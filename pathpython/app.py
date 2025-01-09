@@ -71,10 +71,10 @@ days_plan = {
 - Write down how you **debugged** each one.  
 
 **Additional Resources**  
-- [Python for FP&A and Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)  
-- [Python for Beginners / Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)  
-- [A Simple Guide of Python for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)  
-- [Python with ChatGPT for Finance (LinkedIn Post)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)  
+- [Python for FP&A and Finance ](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)  
+- [Python for Beginners / Finance ](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)  
+- [A Simple Guide of Python for Finance ](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)  
+- [Python with ChatGPT for Finance ](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)  
 """
     },
 
@@ -110,15 +110,82 @@ days_plan = {
     4: {
         "title": "Day 4: Using Python Libraries for Finance",
         "content": """
-- **Overview**: Get familiar with libraries like `pandas`, `numpy`, and `yfinance`.
-- **Mini Project**: Use `pandas` to read in a CSV file with sample financial data and do basic data inspection.
+**Overview**  
+- Learn about the core libraries every FP&A professional should know: **pandas**, **numpy**, **yfinance**, etc.
+- Understand how these libraries can streamline data analysis, automate tasks, and improve reporting.
+
+**Step-by-Step**  
+1. **pandas**:
+   - Great for tabular data (think “Excel in Python”).
+   - Common operations: reading CSV/Excel, data manipulation with `DataFrame`.
+2. **numpy**:
+   - Offers fast array operations and numerous mathematical functions.
+   - Frequently used under the hood by pandas.
+3. **yfinance**:
+   - Designed for retrieving historical market data from Yahoo Finance (stock prices, volume, etc.).
+   - Great for building dashboards or running quick portfolio analyses.
+4. **Also Explore** (from the 7 recommended libraries for FP&A):
+   - **openpyxl** or **xlsxwriter** to create/update Excel files programmatically.
+   - **requests** or **BeautifulSoup** (web scraping if you need to grab financial data online).
+   - **plotly** or **matplotlib** for data visualization.
+
+**Mini Project**  
+- **Check Stock Data**:  
+  1. Install or import `yfinance`.  
+  2. Fetch historical data for a stock (e.g., AAPL) for the last 6 months.  
+  3. Save the data to a CSV using `pandas`.  
+  4. Generate a quick line plot of the stock’s closing prices.
+
+**Additional Resources**  
+- [7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_7-python-libraries-i-believe-every-fpa-professional-activity-7232248897786564608-5A5x?utm_source=share&utm_medium=member_desktop)
+- [Python for FP&A and Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)
+- [Python for Beginners / Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)
+- [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
+- [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
         """
     },
+
     5: {
         "title": "Day 5: Adding Data into Your Python Environment",
         "content": """
-- **Overview**: Learn how to import data from various sources (local, Google Drive, CSV, Excel).
-- **Mini Project**: Load a CSV of revenue and expenses, then calculate net income in Python.
+**Overview**  
+- Dive deeper into ways to import data: from local files, Google Drive, CSV, Excel, or even APIs.
+- Understand best practices for file organization and environment management.
+
+**Step-by-Step**  
+1. **Local Files**:
+   - Use `pandas.read_csv("my_data.csv")` or `pandas.read_excel("my_data.xlsx")`.
+   - Make sure your file path is correct (upload to Colab or set a working directory if local).
+2. **Google Drive Integration** (Colab):
+   - Mount your Drive in Colab:  
+     ```python
+     from google.colab import drive
+     drive.mount('/content/drive')
+     ```
+   - Once mounted, you can read files from `/content/drive/MyDrive/...`.
+3. **APIs & Web Sources**:
+   - Tools like `requests` can help retrieve data from APIs or websites.
+   - After fetching, convert the raw data into a pandas DataFrame.
+4. **Excel Nuances**:
+   - If your data is in multiple sheets, use `sheet_name` parameter in `read_excel`.
+   - If you need advanced formatting, look into libraries like **openpyxl** or **xlsxwriter**.
+
+**Mini Project**  
+1. **CSV + Excel Merge**:
+   - Download or create two files: one CSV and one Excel with financial data.
+   - Load both into Python using `pandas`.
+   - Combine them (e.g., `pd.concat` or `pd.merge`) into a single DataFrame.
+   - Print out the first few rows to confirm.
+2. **Reflect**: 
+   - If you had to do this manually every month, how much time would it take?
+   - Write a short note in your notebook on how Python can automate this.
+
+**Additional Resources**  
+- [7 Python Libraries I Believe Every FP&A Professional Should Master (LinkedIn)](https://www.linkedin.com/posts/christianmartinezthefinancialfox_7-python-libraries-i-believe-every-fpa-professional-activity-7232248897786564608-5A5x?utm_source=share&utm_medium=member_desktop)
+- [Python for FP&A and Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-fpa-and-finance-activity-7160885608951803905-2QY9?utm_source=share&utm_medium=member_desktop)
+- [Python for Beginners / Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-for-beginners-finance-activity-7176841429363642368-fCW_?utm_source=share&utm_medium=member_desktop)
+- [A Simple Guide of Python for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_a-simple-guide-of-python-for-finance-by-christian-activity-7062293000357384192-m-Lv?utm_source=share&utm_medium=member_desktop)
+- [Python with ChatGPT for Finance](https://www.linkedin.com/posts/christianmartinezthefinancialfox_python-with-chatgpt-for-finance-activity-7218853994020880384-xY8L?utm_source=share&utm_medium=member_desktop)
         """
     },
     6: {
