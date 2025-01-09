@@ -23,39 +23,36 @@ selected_day = st.sidebar.selectbox("Choose a day to explore:", [f"Day {i}" for 
 # Main Content Area
 st.write(f"## {selected_day}: Mini-Project")
 
-# Dynamically load and display content for the selected day
+# Debug: Check if the module and file exist
 try:
     day_number = int(selected_day.split()[1])
     module_name = f"mini_projects.day{day_number}"
     module_path = f"mini_projects/day{day_number}.py"
 
-    # Debugging: Check if the file exists
+    # Check if the file exists
     if not os.path.exists(module_path):
-        raise FileNotFoundError(f"File {module_path} not found!")
+        raise FileNotFoundError(f"File '{module_path}' does not exist!")
 
-    # Debugging: Attempt to import the module
-    print(f"Attempting to import: {module_name}")
+    # Attempt to import the module
     day_module = importlib.import_module(module_name)
-    print(f"Successfully imported: {module_name}")
 
-    # Call the run() function in the imported module
+    # Run the `run()` function if it exists
     if hasattr(day_module, 'run'):
-        print(f"Running run() function for {module_name}")
         day_module.run()
     else:
         raise AttributeError(f"The module '{module_name}' does not contain a 'run()' function.")
-except ModuleNotFoundError as e:
-    st.error("🚧 Mini-project for this day is not yet available!")
-    print(f"ModuleNotFoundError: {e}")
 except FileNotFoundError as e:
-    st.error("🚧 Mini-project file is missing!")
-    print(f"FileNotFoundError: {e}")
+    st.error(f"🚧 Mini-project file for {selected_day} is missing!")
+    print(e)
+except ModuleNotFoundError as e:
+    st.error(f"🚧 Mini-project module for {selected_day} is not found!")
+    print(e)
 except AttributeError as e:
-    st.error("🚧 The selected day's module does not contain a 'run()' function!")
-    print(f"AttributeError: {e}")
+    st.error(f"🚧 The module for {selected_day} does not contain a 'run()' function!")
+    print(e)
 except Exception as e:
-    st.error(f"❌ An error occurred: {e}")
-    print(f"General Exception: {e}")
+    st.error(f"❌ An unexpected error occurred: {e}")
+    print(e)
 
 # Footer
 st.markdown("---")
