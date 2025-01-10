@@ -2,6 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import openai
+import os
+
+# Set OpenAI API Key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def main():
     st.set_page_config(
