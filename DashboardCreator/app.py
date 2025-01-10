@@ -211,6 +211,72 @@ def main():
     else:
         st.info("Please upload a CSV or Excel file to begin.")
 
+        # Advanced Visualization Playground
+        # ------------------------------------------------------------
+        st.markdown("---")
+        st.header("🎨 Advanced Visualization Playground")
+        st.write("Create custom visualizations by selecting chart types, dimensions, and filters.")
+
+        chart_type = st.selectbox("Select Chart Type", ["Heatmap", "Boxplot", "Bar Graph"])
+        num_cols = [col for col in df.columns if pd.api.types.is_numeric_dtype(df[col])]
+        cat_cols = [col for col in df.columns if pd.api.types.is_string_dtype(df[col]) or df[col].dtype.name == "category"]
+        date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
+
+        x_axis = st.selectbox("X-Axis", options=cat_cols + num_cols)
+        y_axis = st.selectbox("Y-Axis", options=num_cols if chart_type != "Heatmap" else cat_cols)
+        color = st.selectbox("Color Dimension (Optional)", options=[None] + cat_cols + num_cols)
+
+        st.subheader("Apply Filters (Optional)")
+        filters = {}
+        for col in cat_cols + date_cols:
+            unique_vals = df[col].dropna().unique()
+            selected_vals = st.multiselect(f"Filter by {col}", options=unique_vals, default=unique_vals)
+            filters[col] = selected_vals
+
+        for col, selected_vals in filters.items():
+            df = df[df[col].isin(selected_vals)]
+
+        st.subheader("Generated Visualization")
+        if chart_type == "Heatmap":
+            if color in num_cols:  # Ensure "Color Dimension" is numerical
+                heatmap_fig = px.density_heatmap(
+                    df, 
+                    x=x_axis, 
+                    y=y_axis, 
+                    z=color, 
+                    histfunc="sum", 
+                    color_continuous_scale="Viridis",
+                    title=f"Heatmap of {color} by {x_axis} and {y_axis}"
+                )
+                st.plotly_chart(heatmap_fig, use_container_width=True)
+            else:
+                st.warning(
+                    "Heatmap requires a numerical column for the color dimension. "
+                    "Please select a valid numerical column for 'Color Dimension (Optional)'."
+                )
+        elif chart_type == "Boxplot":
+            boxplot_fig = px.box(
+                df, 
+                x=x_axis, 
+                y=y_axis, 
+                color=color,
+                title=f"Boxplot of {y_axis} by {x_axis}"
+            )
+            st.plotly_chart(boxplot_fig, use_container_width=True)
+        elif chart_type == "Bar Graph":
+            bar_fig = px.bar(
+                df, 
+                x=x_axis, 
+                y=y_axis, 
+                color=color,
+                title=f"Bar Graph of {y_axis} by {x_axis}"
+            )
+            st.plotly_chart(bar_fig, use_container_width=True)
+        else:
+            st.info("Select a valid chart type.")
+
+    else:
+        st.info("Please upload a CSV or Excel file to begin.")
 
 if __name__ == "__main__":
     main()
