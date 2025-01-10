@@ -130,7 +130,7 @@ def main():
     # Add text and image
     st.title("Do you know what is a Sankey Diagram? Let me show you some examples:")
     image_url = "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/sankey/Sankey%20Diagram%20Finance.png"
-    st.image(image_url, caption="Example of a Sankey Diagram", use_column_width=True)
+    st.image(image_url, caption="Example of a Sankey Diagram", use_container_width=True)
 
     st.markdown("""
     **Why is this useful for FP&A?**  
