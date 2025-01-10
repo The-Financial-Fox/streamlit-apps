@@ -7,7 +7,7 @@ def main():
     st.set_page_config(
         page_title="FP&A Dashboard",
         layout="wide",
-        initial_sidebar_state="expanded"
+        initial_sidebar_state="collapsed"
     )
     
     st.title("FP&A Dashboard")
@@ -41,167 +41,75 @@ def main():
         st.write(df.head())
 
         # ------------------------------------------------------------
-        # Check for required columns, but DO NOT return if missing
+        # Advanced Visualization Playground
         # ------------------------------------------------------------
-        # You can customize these based on what's truly critical.
-        expected_cols = [
-            "Segment", "Country", "Product", "Discount Band", 
-            "Units Sold", "Manufacturing Price", "Sale Price", 
-            "Gross Sales", "Discounts", "Sales", "COGS", "Profit", 
-            "Date", "Month Number", "Month Name", "Year"
-        ]
-        missing_cols = [col for col in expected_cols if col not in df.columns]
-        if missing_cols:
-            st.warning(
-                "The following columns are missing and some features may be disabled: "
-                f"{', '.join(missing_cols)}."
-            )
-
-        # ------------------------------------------------------------
-        # KPI Section (conditionally compute KPIs if columns exist)
-        # ------------------------------------------------------------
-        
-        # We'll define helper functions to get a column safely
-        def get_col_sum(data, col_name):
-            """Return sum of column if it exists, else 0."""
-            if col_name in data.columns:
-                return data[col_name].sum()
-            return 0
-
-        def safe_div(num, den):
-            """Safe division, returns 0 if denominator is 0."""
-            try:
-                return num / den if den != 0 else 0
-            except:
-                return 0
-
-        total_revenue = get_col_sum(df, "Sales")
-        total_profit = get_col_sum(df, "Profit")
-        cost_savings = get_col_sum(df, "Discounts")
-
-        # Profit Margin
-        profit_margin = safe_div(total_profit, total_revenue) * 100
-
-        # Year-over-Year Growth (only if 'Year' and 'Sales' exist)
-        yoy_growth = 0
-        if ("Year" in df.columns) and ("Sales" in df.columns):
-            years = sorted(df["Year"].unique())
-            if len(years) > 1:
-                latest_year = years[-1]
-                prior_year = years[-2]
-                latest_sales = df.loc[df["Year"] == latest_year, "Sales"].sum()
-                prior_sales = df.loc[df["Year"] == prior_year, "Sales"].sum()
-                yoy_growth = safe_div((latest_sales - prior_sales), prior_sales) * 100
-
-        # Display the four KPIs (using placeholders if columns are missing)
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric(label="Total Revenue", value=f"${total_revenue:,.2f}" if "Sales" in df.columns else "N/A")
-        with col2:
-            st.metric(label="Profit Margin", value=f"{profit_margin:,.2f}%" if "Profit" in df.columns else "N/A")
-        with col3:
-            st.metric(label="YoY Growth", value=f"{yoy_growth:,.2f}%" if "Year" in df.columns else "N/A")
-        with col4:
-            st.metric(label="Cost Savings", value=f"${cost_savings:,.2f}" if "Discounts" in df.columns else "N/A")
-
         st.markdown("---")
+        st.header("🎨 Advanced Visualization Playground")
+        st.write("Create custom visualizations by selecting chart types, dimensions, and filters.")
 
-        # ------------------------------------------------------------
-        # Map Visualization (Plotly)
-        # ------------------------------------------------------------
-        # Only create the map if 'Country' and 'Sales' columns exist
-        if "Country" in df.columns and "Sales" in df.columns:
-            st.subheader("Geographical Sales Map")
-            country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
-            fig_map = px.choropleth(
-                country_sales, 
-                locations="Country", 
-                locationmode="country names",
-                color="Sales",
-                hover_name="Country", 
-                color_continuous_scale=px.colors.sequential.Plasma,
-                title="Sales by Country"
-            )
-            st.plotly_chart(fig_map, use_container_width=True)
-        else:
-            st.subheader("Geographical Sales Map")
-            st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
-
-        # ------------------------------------------------------------
-        # Drill-Down Table
-        # ------------------------------------------------------------
-        st.subheader("Drill-Down Table")
-        st.write(
-            "Use the table below to filter and explore the dataset by various dimensions."
+        # Visualization Type Selection
+        chart_type = st.selectbox(
+            "Select Chart Type", 
+            ["Heatmap", "Boxplot", "Bar Graph"]
         )
-        
-        # Let users pick columns to display (show everything by default if you like)
-        all_columns = df.columns.tolist()
-        default_cols = []
-        for c in ["Country", "Segment", "Product", "Year", "Sales", "Profit"]:
-            if c in all_columns:
-                default_cols.append(c)
 
-        selected_columns = st.multiselect(
-            "Select columns to display",
-            all_columns,
-            default=default_cols
-        )
-        
-        # Filter by country if available
-        if "Country" in df.columns:
-            unique_countries = df["Country"].unique().tolist()
-            selected_country = st.selectbox("Filter by Country (Optional)", ["All"] + unique_countries)
-            if selected_country != "All":
-                filter_mask = (df["Country"] == selected_country)
+        # Filter by columns
+        st.subheader("Customize Dimensions")
+        num_cols = [col for col in df.columns if pd.api.types.is_numeric_dtype(df[col])]
+        cat_cols = [col for col in df.columns if pd.api.types.is_string_dtype(df[col]) or df[col].dtype.name == "category"]
+        date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
+
+        # Axis selection
+        x_axis = st.selectbox("X-Axis", options=cat_cols + num_cols)
+        y_axis = st.selectbox("Y-Axis", options=num_cols if chart_type != "Heatmap" else cat_cols)
+        color = st.selectbox("Color Dimension (Optional)", options=[None] + cat_cols)
+
+        # Apply Filters
+        st.subheader("Apply Filters (Optional)")
+        filters = {}
+        for col in cat_cols + date_cols:
+            unique_vals = df[col].dropna().unique()
+            selected_vals = st.multiselect(f"Filter by {col}", options=unique_vals, default=unique_vals)
+            filters[col] = selected_vals
+
+        # Filter the dataframe based on user selection
+        for col, selected_vals in filters.items():
+            df = df[df[col].isin(selected_vals)]
+
+        # ------------------------------------------------------------
+        # Generate Visualizations
+        # ------------------------------------------------------------
+        st.subheader("Generated Visualization")
+        if chart_type == "Heatmap":
+            # Generate a heatmap (requires x and y to be categorical, and color to be numerical)
+            if color in num_cols:
+                heatmap_fig = px.density_heatmap(
+                    df, x=x_axis, y=y_axis, z=color, histfunc="sum",
+                    color_continuous_scale="Viridis",
+                    title=f"Heatmap of {color} by {x_axis} and {y_axis}"
+                )
+                st.plotly_chart(heatmap_fig, use_container_width=True)
             else:
-                filter_mask = [True] * len(df)
-        else:
-            filter_mask = [True] * len(df)
+                st.warning("Heatmap requires a numerical column for the color dimension.")
 
-        # Filter by year if available
-        if "Year" in df.columns:
-            unique_years = df["Year"].unique().tolist()
-            selected_year = st.selectbox("Filter by Year (Optional)", ["All"] + list(unique_years))
-            if selected_year != "All":
-                filter_mask = (filter_mask) & (df["Year"] == selected_year)
-
-        # Display the filtered dataframe
-        filtered_data = df.loc[filter_mask, selected_columns]
-        st.dataframe(filtered_data, use_container_width=True)
-
-        # ------------------------------------------------------------
-        # Waterfall Chart (Plotly)
-        # ------------------------------------------------------------
-        # Example Waterfall: break down total revenue by "Segment" if columns exist
-        if "Segment" in df.columns and "Sales" in df.columns:
-            st.subheader("Waterfall Chart: Revenue Breakdown")
-            segment_sales = df.groupby("Segment", as_index=False)["Sales"].sum()
-
-            measure = ["relative"] * len(segment_sales)
-            x_vals = segment_sales["Segment"].tolist()
-            y_vals = segment_sales["Sales"].tolist()
-
-            waterfall_trace = go.Waterfall(
-                name="Segment Breakdown",
-                orientation="v",
-                measure=measure,
-                x=x_vals,
-                text=[f"${val:,.0f}" for val in y_vals],
-                y=y_vals
+        elif chart_type == "Boxplot":
+            # Generate a boxplot
+            boxplot_fig = px.box(
+                df, x=x_axis, y=y_axis, color=color,
+                title=f"Boxplot of {y_axis} by {x_axis}",
+                points="all"
             )
+            st.plotly_chart(boxplot_fig, use_container_width=True)
 
-            fig_waterfall = go.Figure()
-            fig_waterfall.add_trace(waterfall_trace)
-            fig_waterfall.update_layout(
-                title="Sales Waterfall by Segment",
-                waterfallgap=0.5
+        elif chart_type == "Bar Graph":
+            # Generate a bar graph
+            bar_fig = px.bar(
+                df, x=x_axis, y=y_axis, color=color,
+                title=f"Bar Graph of {y_axis} by {x_axis}"
             )
-
-            st.plotly_chart(fig_waterfall, use_container_width=True)
+            st.plotly_chart(bar_fig, use_container_width=True)
         else:
-            st.subheader("Waterfall Chart: Revenue Breakdown")
-            st.info("Waterfall chart is unavailable because either 'Segment' or 'Sales' column is missing.")
+            st.info("Select a chart type to get started.")
 
     else:
         st.info("Please upload a CSV or Excel file to begin.")
