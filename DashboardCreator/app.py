@@ -2,11 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import openai
-import os
-
-# Set OpenAI API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Replace with your API key if not using environment variables
 
 def main():
     st.set_page_config(
@@ -45,26 +40,67 @@ def main():
         st.subheader("Data Preview")
         st.write(df.head())
 
-        # KPI Section
-        total_revenue = df["Sales"].sum() if "Sales" in df.columns else 0
-        total_profit = df["Profit"].sum() if "Profit" in df.columns else 0
-        profit_margin = (total_profit / total_revenue * 100) if total_revenue else 0
-        yoy_growth = 0  # Add your calculation here
-        cost_savings = df["Discounts"].sum() if "Discounts" in df.columns else 0
+        # ------------------------------------------------------------
+        # Check for required columns, but DO NOT return if missing
+        # ------------------------------------------------------------
+        expected_cols = [
+            "Segment", "Country", "Product", "Discount Band", 
+            "Units Sold", "Manufacturing Price", "Sale Price", 
+            "Gross Sales", "Discounts", "Sales", "COGS", "Profit", 
+            "Date", "Month Number", "Month Name", "Year"
+        ]
+        missing_cols = [col for col in expected_cols if col not in df.columns]
+        if missing_cols:
+            st.warning(
+                "The following columns are missing and some features may be disabled: "
+                f"{', '.join(missing_cols)}."
+            )
+
+        # ------------------------------------------------------------
+        # KPI Section (conditionally compute KPIs if columns exist)
+        # ------------------------------------------------------------
+        
+        def get_col_sum(data, col_name):
+            if col_name in data.columns:
+                return data[col_name].sum()
+            return 0
+
+        def safe_div(num, den):
+            try:
+                return num / den if den != 0 else 0
+            except:
+                return 0
+
+        total_revenue = get_col_sum(df, "Sales")
+        total_profit = get_col_sum(df, "Profit")
+        cost_savings = get_col_sum(df, "Discounts")
+        profit_margin = safe_div(total_profit, total_revenue) * 100
+
+        yoy_growth = 0
+        if ("Year" in df.columns) and ("Sales" in df.columns):
+            years = sorted(df["Year"].unique())
+            if len(years) > 1:
+                latest_year = years[-1]
+                prior_year = years[-2]
+                latest_sales = df.loc[df["Year"] == latest_year, "Sales"].sum()
+                prior_sales = df.loc[df["Year"] == prior_year, "Sales"].sum()
+                yoy_growth = safe_div((latest_sales - prior_sales), prior_sales) * 100
 
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("Total Revenue", f"${total_revenue:,.2f}")
+            st.metric(label="Total Revenue", value=f"${total_revenue:,.2f}" if "Sales" in df.columns else "N/A")
         with col2:
-            st.metric("Profit Margin", f"{profit_margin:.2f}%")
+            st.metric(label="Profit Margin", value=f"{profit_margin:,.2f}%" if "Profit" in df.columns else "N/A")
         with col3:
-            st.metric("YoY Growth", f"{yoy_growth:.2f}%")
+            st.metric(label="YoY Growth", value=f"{yoy_growth:,.2f}%" if "Year" in df.columns else "N/A")
         with col4:
-            st.metric("Cost Savings", f"${cost_savings:,.2f}")
+            st.metric(label="Cost Savings", value=f"${cost_savings:,.2f}" if "Discounts" in df.columns else "N/A")
 
         st.markdown("---")
 
+        # ------------------------------------------------------------
         # Map Visualization (Plotly)
+        # ------------------------------------------------------------
         if "Country" in df.columns and "Sales" in df.columns:
             st.subheader("Geographical Sales Map")
             country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
@@ -82,7 +118,9 @@ def main():
             st.subheader("Geographical Sales Map")
             st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
 
+        # ------------------------------------------------------------
         # Drill-Down Table
+        # ------------------------------------------------------------
         st.subheader("Drill-Down Table")
         st.write("Use the table below to filter and explore the dataset by various dimensions.")
         
@@ -109,50 +147,93 @@ def main():
         filtered_data = df.loc[filter_mask, selected_columns]
         st.dataframe(filtered_data, use_container_width=True)
 
-        # GenAI Commentary Section
+        # ------------------------------------------------------------
+        # Waterfall Chart
+        # ------------------------------------------------------------
+        if "Segment" in df.columns and "Sales" in df.columns:
+            st.subheader("Waterfall Chart: Revenue Breakdown")
+            segment_sales = df.groupby("Segment", as_index=False)["Sales"].sum()
+            measure = ["relative"] * len(segment_sales)
+            waterfall_trace = go.Waterfall(
+                name="Segment Breakdown",
+                orientation="v",
+                measure=measure,
+                x=segment_sales["Segment"].tolist(),
+                text=[f"${val:,.0f}" for val in segment_sales["Sales"]],
+                y=segment_sales["Sales"].tolist()
+            )
+            fig_waterfall = go.Figure()
+            fig_waterfall.add_trace(waterfall_trace)
+            fig_waterfall.update_layout(title="Sales Waterfall by Segment", waterfallgap=0.5)
+            st.plotly_chart(fig_waterfall, use_container_width=True)
+        else:
+            st.subheader("Waterfall Chart: Revenue Breakdown")
+            st.info("Waterfall chart is unavailable because either 'Segment' or 'Sales' column is missing.")
+
+        # ------------------------------------------------------------
+        # Advanced Visualization Playground
+        # ------------------------------------------------------------
         st.markdown("---")
-        st.header("🤖 GenAI Commentary")
-        st.write("Get expert-level FP&A insights and suggestions from ChatGPT based on your dataset and visualizations.")
+        st.header("🎨 Advanced Visualization Playground")
+        st.write("Create custom visualizations by selecting chart types, dimensions, and filters.")
 
-        context_input = st.text_area(
-            "Provide additional context or ask specific questions for commentary (optional):",
-            placeholder="E.g., 'Focus on YoY trends and profitability insights.'"
-        )
+        chart_type = st.selectbox("Select Chart Type", ["Heatmap", "Boxplot", "Bar Graph"])
+        num_cols = [col for col in df.columns if pd.api.types.is_numeric_dtype(df[col])]
+        cat_cols = [col for col in df.columns if pd.api.types.is_string_dtype(df[col]) or df[col].dtype.name == "category"]
+        date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
 
-        if st.button("Generate Commentary"):
-            with st.spinner("Generating FP&A Commentary..."):
-                try:
-                    prompt = f"""
-                    You are a Head of FP&A with extensive experience in finance. Analyze the following dataset and its KPIs:
-                    - Total Revenue: ${total_revenue:,.2f}
-                    - Profit Margin: {profit_margin:.2f}%
-                    - Year-over-Year Growth: {yoy_growth:.2f}%
-                    - Cost Savings: ${cost_savings:,.2f}
+        x_axis = st.selectbox("X-Axis", options=cat_cols + num_cols)
+        y_axis = st.selectbox("Y-Axis", options=num_cols if chart_type != "Heatmap" else cat_cols)
+        color = st.selectbox("Color Dimension (Optional)", options=[None] + cat_cols + num_cols)
 
-                    The dataset includes these columns: {', '.join(df.columns)}.
+        st.subheader("Apply Filters (Optional)")
+        filters = {}
+        for col in cat_cols + date_cols:
+            unique_vals = df[col].dropna().unique()
+            selected_vals = st.multiselect(f"Filter by {col}", options=unique_vals, default=unique_vals)
+            filters[col] = selected_vals
 
-                    Insights from the visualizations:
-                    - Geographical Sales Map: Summarize sales performance by region.
-                    - Drill-Down Table: Identify key dimensions driving profitability.
+        for col, selected_vals in filters.items():
+            df = df[df[col].isin(selected_vals)]
 
-                    {context_input}
-
-                    Provide commentary with actionable insights and suggest further analyses.
-                    """
-                    response = openai.ChatCompletion.create(
-                        model="gpt-4",
-                        messages=[
-                            {"role": "system", "content": "You are a Head of FP&A with extensive experience in finance."},
-                            {"role": "user", "content": prompt},
-                        ],
-                        max_tokens=300,
-                        temperature=0.7,
-                    )
-                    commentary = response["choices"][0]["message"]["content"].strip()
-                    st.subheader("FP&A Commentary")
-                    st.write(commentary)
-                except Exception as e:
-                    st.error(f"Error generating commentary: {e}")
+        st.subheader("Generated Visualization")
+        if chart_type == "Heatmap":
+            if color in num_cols:  # Ensure "Color Dimension" is numerical
+                heatmap_fig = px.density_heatmap(
+                    df, 
+                    x=x_axis, 
+                    y=y_axis, 
+                    z=color, 
+                    histfunc="sum", 
+                    color_continuous_scale="Viridis",
+                    title=f"Heatmap of {color} by {x_axis} and {y_axis}"
+                )
+                st.plotly_chart(heatmap_fig, use_container_width=True)
+            else:
+                st.warning(
+                    "Heatmap requires a numerical column for the color dimension. "
+                    "Please select a valid numerical column for 'Color Dimension (Optional)'."
+                )
+        elif chart_type == "Boxplot":
+            boxplot_fig = px.box(
+                df, 
+                x=x_axis, 
+                y=y_axis, 
+                color=color,
+                title=f"Boxplot of {y_axis} by {x_axis}"
+            )
+            st.plotly_chart(boxplot_fig, use_container_width=True)
+        elif chart_type == "Bar Graph":
+            bar_fig = px.bar(
+                df, 
+                x=x_axis, 
+                y=y_axis, 
+                color=color,
+                title=f"Bar Graph of {y_axis} by {x_axis}"
+            )
+            st.plotly_chart(bar_fig, use_container_width=True)
+        else:
+            st.info("Select a valid chart type.")
 
     else:
         st.info("Please upload a CSV or Excel file to begin.")
