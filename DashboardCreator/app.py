@@ -105,57 +105,61 @@ def main():
                 # ------------------------------------------------------------
         # Advanced Geographical Sales Map (Pydeck)
         # ------------------------------------------------------------
-        if "Country" in df.columns and "Sales" in df.columns:
-            st.subheader("Geographical Sales Map")
+        # ------------------------------------------------------------
+# Advanced Geographical Sales Map (Pydeck)
+# ------------------------------------------------------------
+if "Country" in df.columns and "Sales" in df.columns:
+    st.subheader("Geographical Sales Map")
 
-            # Check for latitude and longitude columns
-            if "lat" in df.columns and "lon" in df.columns:
-                # Pydeck Layer with latitude and longitude
-                scatter_layer = pdk.Layer(
-                    "ScatterplotLayer",
-                    df,
-                    get_position=["lon", "lat"],
-                    get_color="[Sales / 1000, 0, 200, 140]",
-                    get_radius=300,
-                    pickable=True,
-                )
+    # Check for latitude and longitude columns
+    if "lat" in df.columns and "lon" in df.columns:
+        # Pydeck Layer with latitude and longitude
+        scatter_layer = pdk.Layer(
+            "ScatterplotLayer",
+            df,
+            get_position=["lon", "lat"],
+            get_color="[Sales / 1000, 0, 200, 140]",
+            get_radius=300,
+            pickable=True,
+        )
 
-                # Define map view
-                view_state = pdk.ViewState(
-                    latitude=df["lat"].mean(),
-                    longitude=df["lon"].mean(),
-                    zoom=4,
-                    pitch=45,
-                )
+        # Define map view
+        view_state = pdk.ViewState(
+            latitude=df["lat"].mean(),
+            longitude=df["lon"].mean(),
+            zoom=4,
+            pitch=45,
+        )
 
-                # Render map
-                st.pydeck_chart(
-                    pdk.Deck(
-                        layers=[scatter_layer],
-                        initial_view_state=view_state,
-                        map_style="mapbox://styles/mapbox/dark-v10",
-                        tooltip={"html": "<b>Sales:</b> {Sales}<br><b>Country:</b> {Country}",
-                                 "style": {"color": "white"}},
-                    )
-                )
-            else:
-                st.info("Lat/Lon columns not found. Using Country data.")
+        # Render map
+        st.pydeck_chart(
+            pdk.Deck(
+                layers=[scatter_layer],
+                initial_view_state=view_state,
+                map_style="mapbox://styles/mapbox/dark-v10",
+                tooltip={"html": "<b>Sales:</b> {Sales}<br><b>Country:</b> {Country}",
+                         "style": {"color": "white"}},
+            )
+        )
+    else:
+        st.info("Lat/Lon columns not found. Using Country data.")
 
-                # Fallback: Aggregate sales by country and display in choropleth
-                country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
-                fig_map = px.choropleth(
-                    country_sales,
-                    locations="Country",
-                    locationmode="country names",
-                    color="Sales",
-                    hover_name="Country",
-                    color_continuous_scale=px.colors.sequential.Plasma,
-                    title="Sales by Country",
-                )
-                st.plotly_chart(fig_map, use_container_width=True)
-        else:
-            st.subheader("Geographical Sales Map")
-            st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
+        # Fallback: Aggregate sales by country and display in choropleth
+        country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
+        fig_map = px.choropleth(
+            country_sales,
+            locations="Country",
+            locationmode="country names",
+            color="Sales",
+            hover_name="Country",
+            color_continuous_scale=px.colors.sequential.Plasma,
+            title="Sales by Country",
+        )
+        st.plotly_chart(fig_map, use_container_width=True)
+else:
+    st.subheader("Geographical Sales Map")
+    st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
+
 
         # ------------------------------------------------------------
         # Drill-Down Table
