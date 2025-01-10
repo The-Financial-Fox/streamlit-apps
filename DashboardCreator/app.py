@@ -238,5 +238,122 @@ def main():
     else:
         st.info("Please upload a CSV or Excel file to begin.")
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import openai
+import os
+
+# Set OpenAI API Key
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+def main():
+    st.set_page_config(
+        page_title="FP&A Dashboard",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    
+    st.title("FP&A Dashboard")
+
+    # Sidebar description
+    st.sidebar.header("Instructions")
+    st.sidebar.write(
+        "1. Upload your dataset (CSV or Excel)\n"
+        "2. The dashboard and KPIs will update automatically\n"
+        "3. Explore advanced visualizations below the main dashboard"
+    )
+
+    # File uploader
+    uploaded_file = st.file_uploader(
+        "Upload your FP&A dataset (CSV or Excel)", 
+        type=["csv", "xlsx"]
+    )
+
+    if uploaded_file is not None:
+        # Read the file
+        try:
+            if uploaded_file.name.endswith(".csv"):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            return
+
+        st.subheader("Data Preview")
+        st.write(df.head())
+
+        # KPI Section
+        total_revenue = df["Sales"].sum() if "Sales" in df.columns else 0
+        total_profit = df["Profit"].sum() if "Profit" in df.columns else 0
+        profit_margin = (total_profit / total_revenue * 100) if total_revenue else 0
+        yoy_growth = 0  # Add your calculation here
+        cost_savings = df["Discounts"].sum() if "Discounts" in df.columns else 0
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Total Revenue", f"${total_revenue:,.2f}")
+        with col2:
+            st.metric("Profit Margin", f"{profit_margin:.2f}%")
+        with col3:
+            st.metric("YoY Growth", f"{yoy_growth:.2f}%")
+        with col4:
+            st.metric("Cost Savings", f"${cost_savings:,.2f}")
+
+        # Advanced Visualization Playground (existing code) ...
+
+        # ------------------------------------------------------------
+        # GenAI Commentary Section
+        # ------------------------------------------------------------
+        st.markdown("---")
+        st.header("🤖 GenAI Commentary")
+        st.write("Get expert-level FP&A insights and suggestions from ChatGPT based on your dataset and visualizations.")
+
+        context_input = st.text_area(
+            "Provide additional context or ask specific questions for commentary (optional):",
+            placeholder="E.g., 'Focus on YoY trends and profitability insights.'"
+        )
+
+        if st.button("Generate Commentary"):
+            with st.spinner("Generating FP&A Commentary..."):
+                try:
+                    prompt = f"""
+                    You are a Head of FP&A with extensive experience in finance. Analyze the following dataset and its KPIs:
+                    - Total Revenue: ${total_revenue:,.2f}
+                    - Profit Margin: {profit_margin:.2f}%
+                    - Year-over-Year Growth: {yoy_growth:.2f}%
+                    - Cost Savings: ${cost_savings:,.2f}
+
+                    The dataset includes these columns: {', '.join(df.columns)}.
+
+                    Insights from the visualizations:
+                    - Geographical Sales Map: Summarize sales performance by region.
+                    - Drill-Down Table: Identify key dimensions driving profitability.
+                    - Waterfall Chart: Highlight revenue contributions by segment.
+
+                    {context_input}
+
+                    Provide commentary with actionable insights and suggest further analyses.
+                    """
+
+                    response = openai.Completion.create(
+                        engine="text-davinci-003",
+                        prompt=prompt,
+                        max_tokens=300,
+                        temperature=0.7
+                    )
+
+                    commentary = response.choices[0].text.strip()
+                    st.subheader("FP&A Commentary")
+                    st.write(commentary)
+
+                except Exception as e:
+                    st.error(f"Error generating commentary: {e}")
+
+    else:
+        st.info("Please upload a CSV or Excel file to begin.")
+
 if __name__ == "__main__":
     main()
