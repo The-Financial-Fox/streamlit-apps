@@ -45,9 +45,7 @@ def main():
         st.subheader("Data Preview")
         st.write(df.head())
 
-        # ------------------------------------------------------------
         # KPI Section
-        # ------------------------------------------------------------
         total_revenue = df["Sales"].sum() if "Sales" in df.columns else 0
         total_profit = df["Profit"].sum() if "Profit" in df.columns else 0
         profit_margin = (total_profit / total_revenue * 100) if total_revenue else 0
@@ -66,9 +64,7 @@ def main():
 
         st.markdown("---")
 
-        # ------------------------------------------------------------
         # Map Visualization (Plotly)
-        # ------------------------------------------------------------
         if "Country" in df.columns and "Sales" in df.columns:
             st.subheader("Geographical Sales Map")
             country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
@@ -86,9 +82,7 @@ def main():
             st.subheader("Geographical Sales Map")
             st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
 
-        # ------------------------------------------------------------
         # Drill-Down Table
-        # ------------------------------------------------------------
         st.subheader("Drill-Down Table")
         st.write("Use the table below to filter and explore the dataset by various dimensions.")
         
@@ -115,17 +109,7 @@ def main():
         filtered_data = df.loc[filter_mask, selected_columns]
         st.dataframe(filtered_data, use_container_width=True)
 
-        # ------------------------------------------------------------
-        # Advanced Visualization Playground
-        # ------------------------------------------------------------
-        st.markdown("---")
-        st.header("🎨 Advanced Visualization Playground")
-        # Existing code for Heatmap, Boxplot, Bar Graph here...
-        # Skipping for brevity.
-
-        # ------------------------------------------------------------
         # GenAI Commentary Section
-        # ------------------------------------------------------------
         st.markdown("---")
         st.header("🤖 GenAI Commentary")
         st.write("Get expert-level FP&A insights and suggestions from ChatGPT based on your dataset and visualizations.")
