@@ -1,10 +1,7 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-import pydeck as pdk
-
 
 def main():
     st.set_page_config(
@@ -102,56 +99,21 @@ def main():
         st.markdown("---")
 
         # ------------------------------------------------------------
-        # Advanced Geographical Sales Map (Pydeck)
+        # Map Visualization (Plotly)
         # ------------------------------------------------------------
         if "Country" in df.columns and "Sales" in df.columns:
             st.subheader("Geographical Sales Map")
-
-            # Check for latitude and longitude columns
-            if "lat" in df.columns and "lon" in df.columns:
-                # Pydeck Layer with latitude and longitude
-                scatter_layer = pdk.Layer(
-                    "ScatterplotLayer",
-                    df,
-                    get_position=["lon", "lat"],
-                    get_color="[Sales / 1000, 0, 200, 140]",
-                    get_radius=300,
-                    pickable=True,
-                )
-
-                # Define map view
-                view_state = pdk.ViewState(
-                    latitude=df["lat"].mean(),
-                    longitude=df["lon"].mean(),
-                    zoom=4,
-                    pitch=45,
-                )
-
-                # Render map
-                st.pydeck_chart(
-                    pdk.Deck(
-                        layers=[scatter_layer],
-                        initial_view_state=view_state,
-                        map_style="mapbox://styles/mapbox/dark-v10",
-                        tooltip={"html": "<b>Sales:</b> {Sales}<br><b>Country:</b> {Country}",
-                                 "style": {"color": "white"}},
-                    )
-                )
-            else:
-                st.info("Lat/Lon columns not found. Using Country data.")
-
-                # Fallback: Aggregate sales by country and display in choropleth
-                country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
-                fig_map = px.choropleth(
-                    country_sales,
-                    locations="Country",
-                    locationmode="country names",
-                    color="Sales",
-                    hover_name="Country",
-                    color_continuous_scale=px.colors.sequential.Plasma,
-                    title="Sales by Country",
-                )
-                st.plotly_chart(fig_map, use_container_width=True)
+            country_sales = df.groupby("Country", as_index=False)["Sales"].sum()
+            fig_map = px.choropleth(
+                country_sales, 
+                locations="Country", 
+                locationmode="country names",
+                color="Sales",
+                hover_name="Country", 
+                color_continuous_scale=px.colors.sequential.Plasma,
+                title="Sales by Country"
+            )
+            st.plotly_chart(fig_map, use_container_width=True)
         else:
             st.subheader("Geographical Sales Map")
             st.info("Map is unavailable because either 'Country' or 'Sales' column is missing.")
@@ -208,9 +170,7 @@ def main():
             st.subheader("Waterfall Chart: Revenue Breakdown")
             st.info("Waterfall chart is unavailable because either 'Segment' or 'Sales' column is missing.")
 
-    else:
-        st.info("Please upload a CSV or Excel file to begin.")
-
+        # ------------------------------------------------------------
         # Advanced Visualization Playground
         # ------------------------------------------------------------
         st.markdown("---")
@@ -224,7 +184,7 @@ def main():
 
         x_axis = st.selectbox("X-Axis", options=cat_cols + num_cols)
         y_axis = st.selectbox("Y-Axis", options=num_cols if chart_type != "Heatmap" else cat_cols)
-        color = st.selectbox("Color Dimension (Optional)", options=[None] + cat_cols + num_cols)
+        color = st.selectbox("Color Dimension (Optional)", options=[None] + cat_cols)
 
         st.subheader("Apply Filters (Optional)")
         filters = {}
@@ -237,40 +197,14 @@ def main():
             df = df[df[col].isin(selected_vals)]
 
         st.subheader("Generated Visualization")
-        if chart_type == "Heatmap":
-            if color in num_cols:  # Ensure "Color Dimension" is numerical
-                heatmap_fig = px.density_heatmap(
-                    df, 
-                    x=x_axis, 
-                    y=y_axis, 
-                    z=color, 
-                    histfunc="sum", 
-                    color_continuous_scale="Viridis",
-                    title=f"Heatmap of {color} by {x_axis} and {y_axis}"
-                )
-                st.plotly_chart(heatmap_fig, use_container_width=True)
-            else:
-                st.warning(
-                    "Heatmap requires a numerical column for the color dimension. "
-                    "Please select a valid numerical column for 'Color Dimension (Optional)'."
-                )
+        if chart_type == "Heatmap" and color in num_cols:
+            heatmap_fig = px.density_heatmap(df, x=x_axis, y=y_axis, z=color, histfunc="sum", color_continuous_scale="Viridis")
+            st.plotly_chart(heatmap_fig, use_container_width=True)
         elif chart_type == "Boxplot":
-            boxplot_fig = px.box(
-                df, 
-                x=x_axis, 
-                y=y_axis, 
-                color=color,
-                title=f"Boxplot of {y_axis} by {x_axis}"
-            )
+            boxplot_fig = px.box(df, x=x_axis, y=y_axis, color=color)
             st.plotly_chart(boxplot_fig, use_container_width=True)
         elif chart_type == "Bar Graph":
-            bar_fig = px.bar(
-                df, 
-                x=x_axis, 
-                y=y_axis, 
-                color=color,
-                title=f"Bar Graph of {y_axis} by {x_axis}"
-            )
+            bar_fig = px.bar(df, x=x_axis, y=y_axis, color=color)
             st.plotly_chart(bar_fig, use_container_width=True)
         else:
             st.info("Select a valid chart type.")
