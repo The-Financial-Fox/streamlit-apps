@@ -150,6 +150,14 @@ def main():
     A Sankey diagram is a type of **flow diagram** where the width of each arrow (link)
     is proportional to the amount or quantity of that flow. It provides a clear, visually
     compelling way to see how resources move or distribute among various categories.
+
+    # Title or Header text
+    st.title("Do you know what is a Sankey Diagram? Let me show you some examples:")
+
+# Add an image from a link
+    image_url = "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/sankey/Sankey%20Diagram%20Finance.png"  # Replace with the actual link to your image
+    st.image(image_url, caption="Example of a Sankey Diagram", use_column_width=True)
+    
     
     **Why is this useful for FP&A?**  
     In **Financial Planning & Analysis (FP&A)**, Sankey diagrams help you:
