@@ -6,7 +6,6 @@ import base64
 import io
 
 # Ensure Kaleido is recognized for PNG export
-# (Adjust the default image size, if desired)
 pio.kaleido.scope.default_format = "png"
 pio.kaleido.scope.default_width = 1200
 pio.kaleido.scope.default_height = 700
@@ -17,11 +16,6 @@ st.set_page_config(page_title="Sankey Diagrams for FP&A", layout="wide")
 # Helper Functions
 # ----------------
 def parse_flow_text(flow_text: str):
-    """
-    Parse manual flow input of the form:
-    Source [Amount] Target
-    Returns a list of tuples (source, amount, target).
-    """
     flows = []
     lines = flow_text.strip().split("\n")
     for line in lines:
@@ -44,10 +38,6 @@ def parse_flow_text(flow_text: str):
 
 
 def load_data_from_file(uploaded_file):
-    """
-    Load CSV or Excel with columns: [Source, Amount, Target].
-    Returns a list of (source, amount, target).
-    """
     if uploaded_file is None:
         return []
 
@@ -73,11 +63,6 @@ def build_sankey(
     node_padding=20,
     opacity=0.6
 ):
-    """
-    Build a Plotly Sankey diagram from flows: list of (source, amount, target).
-    node_color_map: dict {node_label: color_hex} for individual node colors.
-    """
-    # Gather node labels
     labels = []
     for source, amount, target in flows:
         if source not in labels:
@@ -85,21 +70,17 @@ def build_sankey(
         if target not in labels:
             labels.append(target)
 
-    # Build index mapping
     label_to_index = {label: i for i, label in enumerate(labels)}
 
-    # Build source/target arrays
     sources = [label_to_index[s] for s, _, _ in flows]
     targets = [label_to_index[t] for _, _, t in flows]
     values = [a for _, a, _ in flows]
 
-    # Decide node colors
     colors = []
     for label in labels:
         if node_color_map and label in node_color_map:
             colors.append(node_color_map[label])
         else:
-            # Default color if not specified in node_color_map
             colors.append("#1f77b4")
 
     node = dict(
@@ -122,12 +103,7 @@ def build_sankey(
 
 
 def generate_download_link(fig, file_format="png"):
-    """
-    Generate a download link for the Plotly figure as an image (PNG or SVG).
-    Requires Kaleido (for PNG) or can also handle SVG.
-    """
     buffer = io.BytesIO()
-    # Attempt to write the image using Kaleido
     fig.write_image(buffer, format=file_format)
     b64 = base64.b64encode(buffer.getvalue()).decode()
 
@@ -141,24 +117,22 @@ def generate_download_link(fig, file_format="png"):
 # Streamlit App
 # ---------------
 def main():
-    # Page Title
     st.title("Sankey Diagrams for FP&A")
 
-    # Intro / Explanation
+    # Add an introductory section
     st.markdown("""
     **What is a Sankey Diagram?**  
     A Sankey diagram is a type of **flow diagram** where the width of each arrow (link)
     is proportional to the amount or quantity of that flow. It provides a clear, visually
     compelling way to see how resources move or distribute among various categories.
+    """)
 
-    # Title or Header text
+    # Add text and image
     st.title("Do you know what is a Sankey Diagram? Let me show you some examples:")
-
-# Add an image from a link
-    image_url = "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/sankey/Sankey%20Diagram%20Finance.png"  # Replace with the actual link to your image
+    image_url = "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/sankey/Sankey%20Diagram%20Finance.png"
     st.image(image_url, caption="Example of a Sankey Diagram", use_column_width=True)
-    
-    
+
+    st.markdown("""
     **Why is this useful for FP&A?**  
     In **Financial Planning & Analysis (FP&A)**, Sankey diagrams help you:
     - Clearly understand the **allocation** of budgets across different departments and cost centers.
@@ -185,7 +159,6 @@ def main():
     node_padding = st.sidebar.slider("Node Padding", 10, 50, 20)
     link_opacity = st.sidebar.slider("Link Opacity", 0.1, 1.0, 0.6)
 
-    # **New** font customization
     st.sidebar.header("Title Settings")
     chart_title = st.sidebar.text_input("Chart Title", value="Sankey Diagram")
     title_font_family = st.sidebar.selectbox(
@@ -203,7 +176,6 @@ def main():
     )
     node_label_font_size = st.sidebar.slider("Node Label Font Size", 8, 24, 12)
 
-    # Collect flows
     flows = []
     if uploaded_file:
         file_flows = load_data_from_file(uploaded_file)
@@ -217,7 +189,6 @@ def main():
         st.info("No flows available. Upload a file or input flows manually.")
         return
 
-    # Build a list of unique nodes for color customization
     unique_nodes = set()
     for s, amt, t in flows:
         unique_nodes.add(s)
@@ -232,7 +203,6 @@ def main():
         chosen_color = st.sidebar.color_picker(f"{node}", color_default)
         node_color_map[node] = chosen_color
 
-    # Build Sankey diagram
     fig = build_sankey(
         flows,
         node_color_map=node_color_map,
@@ -241,7 +211,6 @@ def main():
         opacity=link_opacity
     )
 
-    # Update layout with chart title and a base font (for node labels & tooltips)
     fig.update_layout(
         title=dict(
             text=chart_title,
@@ -260,7 +229,6 @@ def main():
 
     st.plotly_chart(fig, use_container_width=True)
 
-    # Export options
     st.subheader("Export Diagram")
     col1, col2 = st.columns(2)
 
@@ -287,8 +255,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-# Add a footer to the app
 st.markdown("""
 ---
 ### Built with ChatGPT by Christian Martinez  
