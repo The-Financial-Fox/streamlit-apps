@@ -19,12 +19,15 @@ def day_4_page():
 
     # Time-Series Forecasting with Prophet
     st.header("Time-Series Forecasting with Prophet")
-    st.write("Below is an example of using Prophet for time-series forecasting. We'll simulate some revenue data and make predictions for future trends.")
+    st.write("Below is an example of using Prophet for time-series forecasting. We'll simulate some seasonal revenue data and make predictions for future trends.")
 
-    # Simulate data
+    # Simulate seasonal data
     np.random.seed(42)
-    dates = pd.date_range(start="2023-01-01", periods=100)
-    revenue = np.cumsum(np.random.randn(100) * 100 + 500)  # Random walk data
+    dates = pd.date_range(start="2023-01-01", periods=365)
+    seasonal_effect = 100 * np.sin(2 * np.pi * dates.dayofyear / 365)  # Seasonal effect
+    trend = np.linspace(1000, 1500, 365)  # Upward trend
+    noise = np.random.randn(365) * 50  # Random noise
+    revenue = trend + seasonal_effect + noise
     df = pd.DataFrame({"ds": dates, "y": revenue})
 
     # Fit Prophet model
@@ -32,13 +35,13 @@ def day_4_page():
     model.fit(df)
 
     # Make future dataframe
-    future = model.make_future_dataframe(periods=30)
+    future = model.make_future_dataframe(periods=90)
     forecast = model.predict(future)
 
     # Plot forecast
     fig = model.plot(forecast)
     ax = fig.gca()
-    ax.set_title("Revenue Forecast using Prophet")
+    ax.set_title("Revenue Forecast with Seasonal Data using Prophet")
     ax.set_xlabel("Date")
     ax.set_ylabel("Revenue ($)")
     plt.xticks(rotation=45)
