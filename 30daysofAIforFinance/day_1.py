@@ -3,12 +3,6 @@ import streamlit as st
 TITLE = "Overview of AI in FP&A"
 
 def day_1_page():
-    st.set_page_config(
-        page_title=f"Day 1: {TITLE}",
-        page_icon="📊",
-        layout="wide"
-    )
-
     # Header
     st.title(f"📊 Day 1: {TITLE}")
     st.write("Welcome to Day 1! Today we will explore the basics of AI and its applications in Financial Planning and Analysis (FP&A).")
