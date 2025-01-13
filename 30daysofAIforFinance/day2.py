@@ -3,12 +3,6 @@ import streamlit as st
 TITLE = "Setting Up Your Environment"
 
 def day_2_page():
-    st.set_page_config(
-        page_title=f"Day 2: {TITLE}",
-        page_icon="🔧",
-        layout="wide"
-    )
-
     # Header
     st.title(f"🔧 Day 2: {TITLE}")
     st.write("Welcome to Day 2! Today, we'll set up the tools and environment needed to embark on your 30-day AI journey.")
@@ -23,10 +17,7 @@ def day_2_page():
     st.header("Step-by-Step Setup Guide")
     st.markdown("1. **Install Python**: Download and install the latest version of Python from [python.org](https://www.python.org/downloads/).")
     st.markdown("2. **Set Up a Virtual Environment**: Run the following commands to create and activate a virtual environment:")
-    st.code("""
-    python -m venv ai_env
-    source ai_env/bin/activate  # On Windows: ai_env\Scripts\activate
-    """, language="bash")
+    st.code("""\npython -m venv ai_env\nsource ai_env/bin/activate  # On Windows: ai_env\\Scripts\\activate\n""", language="bash")
     st.markdown("3. **Install Required Libraries**: Use pip to install the necessary libraries:")
     st.code("pip install streamlit pandas numpy matplotlib scikit-learn")
     st.markdown("4. **Install Jupyter Notebook**: Run the command:")
