@@ -2,77 +2,85 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+import seaborn as sns
 
-TITLE = "Forecasting Techniques in FP&A"
+TITLE = "Data Visualization for FP&A"
 
-def day_5_page():
+def day_6_page():
     # Header
-    st.title(f"📊 Day 5: {TITLE}")
-    st.write("Welcome to Day 5! Today, we'll dive into forecasting techniques and their role in financial planning and analysis (FP&A).")
+    st.title(f"📊 Day 6: {TITLE}")
+    st.write("Welcome to Day 6! Today, we'll explore data visualization techniques and their role in financial planning and analysis (FP&A).")
 
     # Key Topics Section
     st.header("Key Topics")
-    st.markdown("- **What is Forecasting?**")
-    st.markdown("- **Basic Forecasting Techniques:** Linear Regression and Moving Averages.")
-    st.markdown("- **Applications in FP&A:** Revenue forecasting, expense predictions, and KPI trend analysis.")
+    st.markdown("- **Why Visualization Matters in FP&A?**")
+    st.markdown("- **Common Visualization Techniques:** Bar Charts, Line Charts, and Heatmaps.")
+    st.markdown("- **Interactive Dashboards for Finance.**")
 
-    # Linear Regression Example
-    st.header("Linear Regression for Forecasting")
-    st.write("Below is an example of using Linear Regression to forecast future revenue trends based on historical data.")
-
-    # Simulate data
+    # Generate Sample Data
     np.random.seed(42)
-    days = np.arange(1, 101).reshape(-1, 1)  # Days as feature
-    revenue = 500 + 10 * days.flatten() + np.random.randn(100) * 100  # Linear trend with noise
-    future_days = np.arange(101, 121).reshape(-1, 1)  # Future days
+    dates = pd.date_range(start="2023-01-01", periods=12, freq='M')
+    revenue = np.random.randint(5000, 15000, size=12)
+    expenses = np.random.randint(2000, 10000, size=12)
+    profit = revenue - expenses
+    data = pd.DataFrame({"Month": dates, "Revenue": revenue, "Expenses": expenses, "Profit": profit})
 
-    # Fit Linear Regression
-    model = LinearRegression()
-    model.fit(days, revenue)
-    predictions = model.predict(future_days)
+    # Visualization Section
+    st.header("Visualizing Financial Metrics")
 
-    # Plot actual vs predicted
+    # Line Chart: Revenue vs. Expenses
+    st.subheader("1. Revenue vs. Expenses Over Time")
     fig, ax = plt.subplots()
-    ax.scatter(days, revenue, color="blue", label="Historical Revenue", alpha=0.6)
-    ax.plot(future_days, predictions, color="red", label="Forecasted Revenue", linewidth=2)
-    ax.set_title("Revenue Forecast using Linear Regression")
-    ax.set_xlabel("Days")
-    ax.set_ylabel("Revenue ($)")
+    ax.plot(data["Month"], data["Revenue"], label="Revenue", marker="o")
+    ax.plot(data["Month"], data["Expenses"], label="Expenses", marker="o")
+    ax.set_title("Revenue vs. Expenses")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Amount ($)")
     ax.legend()
-
-    # Display plot in Streamlit
+    plt.xticks(rotation=45)
     st.pyplot(fig)
 
-    # Metrics
-    mse = mean_squared_error(revenue, model.predict(days))
-    st.metric("Mean Squared Error of Model", f"{mse:.2f}")
+    # Bar Chart: Monthly Profit
+    st.subheader("2. Monthly Profit")
+    fig, ax = plt.subplots()
+    sns.barplot(x=data["Month"].dt.strftime('%b'), y=data["Profit"], ax=ax, palette="coolwarm")
+    ax.set_title("Monthly Profit")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Profit ($)")
+    st.pyplot(fig)
+
+    # Heatmap: Correlation Matrix
+    st.subheader("3. Correlation Heatmap")
+    corr_matrix = data[["Revenue", "Expenses", "Profit"]].corr()
+    fig, ax = plt.subplots()
+    sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".2f", ax=ax)
+    ax.set_title("Correlation Matrix")
+    st.pyplot(fig)
 
     # Interactive Exercise
     st.header("Today's Exercise")
     st.markdown("Reflect on these questions and complete the tasks:")
 
     response_1 = st.text_area(
-        "1. How can regression models help improve accuracy in financial forecasting?",
+        "1. How can visualizations like bar charts and heatmaps help in financial decision-making?",
         placeholder="Write your thoughts here...",
-        key="day5_q1"
+        key="day6_q1"
     )
 
     response_2 = st.text_area(
-        "2. What limitations do simple forecasting models have, and how can they be addressed?",
+        "2. What additional visualizations could be useful for FP&A?",
         placeholder="Write your examples here...",
-        key="day5_q2"
+        key="day6_q2"
     )
 
     # Additional Learning Resources
     st.header("Additional Resources")
-    st.write("Explore these resources to deepen your understanding of forecasting techniques:")
-    st.markdown("- [Linear Regression in Scikit-Learn](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)")
-    st.markdown("- [Understanding Mean Squared Error](https://en.wikipedia.org/wiki/Mean_squared_error)")
-    st.markdown("- [Forecasting Methods Overview](https://otexts.com/fpp2/forecasting-methods.html)")
+    st.write("Explore these resources to deepen your understanding of data visualization techniques:")
+    st.markdown("- [Matplotlib Documentation](https://matplotlib.org/stable/contents.html)")
+    st.markdown("- [Seaborn Documentation](https://seaborn.pydata.org/)")
+    st.markdown("- [Best Practices for Data Visualization](https://www.data-to-viz.com/)")
 
-    st.info("Congratulations on completing Day 5! Tomorrow, we'll explore advanced forecasting methods.")
+    st.info("Congratulations on completing Day 6! Tomorrow, we'll explore advanced financial modeling techniques.")
 
 if __name__ == "__main__":
-    day_5_page()
+    day_6_page()
