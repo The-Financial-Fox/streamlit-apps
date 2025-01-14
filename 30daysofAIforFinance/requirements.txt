@@ -6,3 +6,5 @@ seaborn
 plotly
 prophet
 scikit-learn
+scipy
+yfinance
