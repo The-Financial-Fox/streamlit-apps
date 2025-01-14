@@ -1,37 +1,45 @@
 import streamlit as st
 import importlib
 
-# Main script for 21 Days of AI for FP&A and Finance
-st.set_page_config(
-    page_title="21 Days of AI for FP&A and Finance",
-    page_icon="📊",
-    layout="wide"
-)
-
 def main():
-    st.title("Welcome to 21 Days of AI for FP&A and Finance")
-    st.write(
-        "Embark on a transformative journey over the next 21 days, where you'll learn the essentials of AI and how to apply it in Financial Planning and Analysis (FP&A). Each day is packed with actionable lessons, interactive exercises, and real-world applications tailored for finance professionals."
+    # Main Page Configuration
+    st.set_page_config(
+        page_title="30 Days of AI for FP&A and Finance",
+        page_icon="📊",
+        layout="wide"
     )
 
-    st.sidebar.title("📅 Navigation")
-    selected_day = st.sidebar.selectbox(
-        "Choose a Day:",
-        [f"Day {i}" for i in range(1, 22)]
-    )
+    # Header
+    st.title("📊 30 Days of AI for FP&A and Finance")
+    st.subheader("Learn how to apply AI techniques to Financial Planning and Analysis in just 30 days!")
 
-    try:
-        # Dynamically load and run the selected day's script
-        day_module = importlib.import_module(f"day_{selected_day.split()[1]}")
-        day_module.main()
-    except ModuleNotFoundError:
-        st.error("Content for this day is not yet available. Please check back later.")
+    # Navigation
+    st.sidebar.title("Navigation")
+    pages = {"Home": home_page}
 
-    st.sidebar.markdown("---")
-    st.sidebar.title("📢 Connect and Learn More")
-    st.sidebar.markdown("[Christian Martinez on LinkedIn](https://www.linkedin.com/in/christianmartinezthefinancialfox/)")
-    st.sidebar.markdown("[Christian Martinez on YouTube](https://www.youtube.com/@christianmartinezAIforFinance)")
-    st.sidebar.markdown("**Courses:**")
+    # Dynamically load day modules
+    for day in range(1, 31):  # Adjust range if necessary
+        try:
+            day_module = importlib.import_module(f"day_{day}")
+            pages[f"Day {day}: {day_module.TITLE}"] = getattr(day_module, f"day_{day}_page")
+        except (ModuleNotFoundError, AttributeError):
+            pass  # Skip days that haven't been added yet
+
+    page = st.sidebar.radio("Go to:", list(pages.keys()))
+
+    # Render selected page
+    pages[page]()
+
+
+def home_page():
+    st.header("Welcome to 30 Days of AI for FP&A and Finance")
+    st.write("This program is designed to guide you through the fundamentals of AI and its practical applications in financial planning and analysis.")
+    st.markdown("### What's Included:")
+    st.markdown("- Daily lessons with hands-on exercises")
+    st.markdown("- Practical Streamlit app-building projects")
+    st.markdown("- Real-world use cases for FP&A and finance")
+    st.success("Let’s get started! Choose 'Day 1' from the sidebar to begin.")
+
     st.sidebar.markdown("- [Advanced ChatGPT for Finance](https://maven.com/nicolas-boucher/advanced-chatgpt-for-finance)")
     st.sidebar.markdown("- [Python in Excel for Financial Professionals](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fpython-in-excel-for-financial-professionals%3Ftrk%3Dshare_ent_url%26shareId%3DYglnUBKPR3apywIvjWfPdg%253D%253D)")
     st.sidebar.markdown("- [Advanced Python in Excel & Machine Learning](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fadvanced-python-in-excel-machine-learning%3Ftrk%3Dshare_ent_url%26shareId%3D8BCe%252Bw8mSl6Kcbh1Z4naLw%253D%253D)")
