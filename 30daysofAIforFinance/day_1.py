@@ -19,7 +19,7 @@ def day_1_page():
 
     st.markdown("**Using AI for Finance and FP&A**")
     st.components.v1.iframe(
-        src="https://www.youtube.com/watch?v=4IzcGV6fCEA&t=2s",
+        src="https://www.youtube.com/embed/4IzcGV6fCEA?si=45C7UyBh-xbdrD7J&amp;start=2",
         width=560,
         height=315
     )
