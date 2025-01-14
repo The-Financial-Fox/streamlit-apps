@@ -9,3 +9,13 @@ scikit-learn
 scipy
 yfinance
 statsmodels
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+plotly
+prophet
+statsmodels
+scipy
