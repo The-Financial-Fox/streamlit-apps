@@ -13,6 +13,17 @@ def day_1_page():
     st.markdown("- **Use cases for AI in FP&A:** Budgeting, Forecasting, Anomaly Detection, and Scenario Planning.")
     st.markdown("- **Benefits and challenges of adopting AI in Finance.**")
 
+     # Recommend Videos with Embedding
+    st.subheader("📺 Recommended Videos")
+    st.write("Learn more about these platforms by watching these videos:")
+
+    st.markdown("**Using AI for Finance and FP&A**")
+    st.components.v1.iframe(
+        src="https://www.youtube.com/watch?v=4IzcGV6fCEA&t=2s",
+        width=560,
+        height=315
+    )
+
     # Interactive Exercise Section
     st.header("Today's Exercise")
     st.markdown("Reflect on these questions and share your insights:")
