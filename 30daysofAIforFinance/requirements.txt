@@ -8,3 +8,4 @@ prophet
 scikit-learn
 scipy
 yfinance
+statsmodels
