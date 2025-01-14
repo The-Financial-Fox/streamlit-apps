@@ -53,7 +53,7 @@ def home_page():
     # Add Image
     st.image(
         "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/30daysofAIforFinance/How%20to%20Learn%20AI%20for%20Finance%20Fast.png",
-        caption="How to Learn AI for Finance Fast",
+        caption="How to Learn AI for Finance Fast by Christian Martinez",
         use_column_width=True
     )
 
