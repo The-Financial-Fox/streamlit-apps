@@ -4,13 +4,13 @@ import importlib
 def main():
     # Main Page Configuration
     st.set_page_config(
-        page_title="30 Days of AI for FP&A and Finance",
+        page_title="21 Days of AI for FP&A and Finance",
         page_icon="📊",
         layout="wide"
     )
 
     # Header
-    st.title("📊 30 Days of AI for FP&A and Finance")
+    st.title("📊 21 Days of AI for FP&A and Finance")
     st.subheader("Learn how to apply AI techniques to Financial Planning and Analysis in just 30 days!")
 
     # Navigation
@@ -38,12 +38,19 @@ def home_page():
     st.markdown("- Daily lessons with hands-on exercises")
     st.markdown("- Practical Streamlit app-building projects")
     st.markdown("- Real-world use cases for FP&A and finance")
+    st.markdown("📢 Connect and Learn More")
+    st.markdown("[Christian Martinez on LinkedIn](https://www.linkedin.com/in/christianmartinezthefinancialfox/)")
+    st.markdown("[Christian Martinez on YouTube](https://www.youtube.com/@christianmartinezAIforFinance)")
+    st.markdown("**Courses:**")
+    st.markdown("- [Advanced ChatGPT for Finance](https://maven.com/nicolas-boucher/advanced-chatgpt-for-finance)")
+    st.markdown("- [Python in Excel for Financial Professionals](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fpython-in-excel-for-financial-professionals%3Ftrk%3Dshare_ent_url%26shareId%3DYglnUBKPR3apywIvjWfPdg%253D%253D)")
+    st.markdown("- [Advanced Python in Excel & Machine Learning](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fadvanced-python-in-excel-machine-learning%3Ftrk%3Dshare_ent_url%26shareId%3D8BCe%252Bw8mSl6Kcbh1Z4naLw%253D%253D)")
+    st.markdown("- [Copilot for Finance Video Course](https://nicolasboucher.gumroad.com/l/Copilot-for-finance-video-course)")
+
+
     st.success("Let’s get started! Choose 'Day 1' from the sidebar to begin.")
 
-    st.sidebar.markdown("- [Advanced ChatGPT for Finance](https://maven.com/nicolas-boucher/advanced-chatgpt-for-finance)")
-    st.sidebar.markdown("- [Python in Excel for Financial Professionals](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fpython-in-excel-for-financial-professionals%3Ftrk%3Dshare_ent_url%26shareId%3DYglnUBKPR3apywIvjWfPdg%253D%253D)")
-    st.sidebar.markdown("- [Advanced Python in Excel & Machine Learning](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fadvanced-python-in-excel-machine-learning%3Ftrk%3Dshare_ent_url%26shareId%3D8BCe%252Bw8mSl6Kcbh1Z4naLw%253D%253D)")
-    st.sidebar.markdown("- [Copilot for Finance Video Course](https://nicolasboucher.gumroad.com/l/Copilot-for-finance-video-course)")
+
 
 if __name__ == "__main__":
     main()
