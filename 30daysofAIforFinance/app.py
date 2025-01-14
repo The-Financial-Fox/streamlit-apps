@@ -50,6 +50,13 @@ def home_page():
     st.markdown("📢 Connect and Learn More")
     st.markdown("[Christian Martinez on LinkedIn](https://www.linkedin.com/in/christianmartinezthefinancialfox/)")
     st.markdown("[Christian Martinez on YouTube](https://www.youtube.com/@christianmartinezAIforFinance)")
+    # Add Image
+    st.image(
+        "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/30daysofAIforFinance/How%20to%20Learn%20AI%20for%20Finance%20Fast.png",
+        caption="How to Learn AI for Finance Fast",
+        use_column_width=True
+    )
+
     st.markdown("**Courses:**")
     st.markdown("- [Advanced ChatGPT for Finance](https://maven.com/nicolas-boucher/advanced-chatgpt-for-finance)")
     st.markdown("- [Python in Excel for Financial Professionals](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fpython-in-excel-for-financial-professionals%3Ftrk%3Dshare_ent_url%26shareId%3DYglnUBKPR3apywIvjWfPdg%253D%253D)")
