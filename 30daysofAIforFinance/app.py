@@ -32,7 +32,7 @@ def main():
 
 
 def home_page():
-    st.header("Welcome to 30 Days of AI for FP&A and Finance")
+    st.header("Welcome to 21 Days of AI for FP&A and Finance")
     st.write("This program is designed to guide you through the fundamentals of AI and its practical applications in financial planning and analysis.")
     st.markdown("### What's Included:")
     st.markdown("- Daily lessons with hands-on exercises")
