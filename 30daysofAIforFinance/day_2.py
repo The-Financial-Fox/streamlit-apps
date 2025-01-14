@@ -14,11 +14,23 @@ def day_2_page():
         "There are fantastic tools like **Google Colab** and **Python in Excel** that allow you to get started immediately."
     )
 
-    # Recommend Videos
+    # Recommend Videos with Embedding
     st.subheader("📺 Recommended Videos")
     st.write("Learn more about these platforms by watching these videos:")
-    st.markdown("- [Google Colab for Beginners](https://www.youtube.com/watch?v=d3Ix-UnGlRo&t=1437s)")
-    st.markdown("- [Python in Excel Tutorial](https://www.youtube.com/watch?v=rN49URY3Q_c&t=413s)")
+
+    st.markdown("**Google Colab for Beginners**")
+    st.components.v1.iframe(
+        src="https://www.youtube.com/embed/d3Ix-UnGlRo?start=1437",
+        width=560,
+        height=315
+    )
+
+    st.markdown("**Python in Excel Tutorial**")
+    st.components.v1.iframe(
+        src="https://www.youtube.com/embed/rN49URY3Q_c?start=413",
+        width=560,
+        height=315
+    )
 
     # Introduce Google Colab
     st.header("What is Google Colab?")
