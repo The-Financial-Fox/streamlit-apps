@@ -11,7 +11,7 @@ def main():
 
     # Header
     st.title("📊 21 Days of AI for FP&A and Finance")
-    st.subheader("Learn how to apply AI techniques to Financial Planning and Analysis in just 30 days!")
+    st.subheader("Learn how to apply AI techniques to Financial Planning and Analysis in just 21 days!")
 
     # Navigation
     st.sidebar.title("Navigation")
