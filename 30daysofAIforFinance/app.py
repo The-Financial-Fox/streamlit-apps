@@ -38,6 +38,15 @@ def home_page():
     st.markdown("- Daily lessons with hands-on exercises")
     st.markdown("- Practical Streamlit app-building projects")
     st.markdown("- Real-world use cases for FP&A and finance")
+
+    # Embed YouTube video
+    st.subheader("📺 Watch the Introduction Video")
+    st.components.v1.iframe(
+        src="https://www.youtube.com/embed/liN9IgGES7k?si=Ckm44bwOFENuv8lj",
+        width=560,
+        height=315
+    )
+
     st.markdown("📢 Connect and Learn More")
     st.markdown("[Christian Martinez on LinkedIn](https://www.linkedin.com/in/christianmartinezthefinancialfox/)")
     st.markdown("[Christian Martinez on YouTube](https://www.youtube.com/@christianmartinezAIforFinance)")
@@ -47,9 +56,7 @@ def home_page():
     st.markdown("- [Advanced Python in Excel & Machine Learning](https://www.linkedin.com/learning-login/share?forceAccount=false&redirect=https%3A%2F%2Fwww.linkedin.com%2Flearning%2Fadvanced-python-in-excel-machine-learning%3Ftrk%3Dshare_ent_url%26shareId%3D8BCe%252Bw8mSl6Kcbh1Z4naLw%253D%253D)")
     st.markdown("- [Copilot for Finance Video Course](https://nicolasboucher.gumroad.com/l/Copilot-for-finance-video-course)")
 
-
     st.success("Let’s get started! Choose 'Day 1' from the sidebar to begin.")
-
 
 
 if __name__ == "__main__":
