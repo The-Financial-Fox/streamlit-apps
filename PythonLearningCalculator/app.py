@@ -75,5 +75,5 @@ st.markdown(
 
 # Footer
 st.markdown("---")
-st.markdown("Developed by [Your Name] - [GitHub Repository](https://github.com/The-Financial-Fox/pythonforfinance2025)")
+st.markdown("Developed by [Christian Martinez] - [GitHub Repository](https://github.com/The-Financial-Fox/pythonforfinance2025)")
 
