@@ -1,4 +1,3 @@
- random
  duckdb
  pandas
  plotly.express
