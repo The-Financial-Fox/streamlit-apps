@@ -3,8 +3,8 @@ import pandas as pd
 
 # Load data
 def load_data():
-    file_path = "Top_1000_IMDb_movies_New_version.csv"
-    df = pd.read_csv(file_path)
+    file_url = "https://raw.githubusercontent.com/The-Financial-Fox/streamlit-apps/refs/heads/main/movies/Top_1000_IMDb_movies_New_version.csv"
+    df = pd.read_csv(file_url)
     return df
 
 df = load_data()
