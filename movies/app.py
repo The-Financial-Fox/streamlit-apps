@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import random
 
 # Load data
 def load_data():
@@ -23,3 +24,13 @@ st.write(df.describe(include='all'))
 # Display full dataset for reference
 st.write("### Full Dataset")
 st.dataframe(df)
+
+# Cool Recommendation Feature
+st.sidebar.header("🎥 Get a Random Movie Recommendation!")
+if st.sidebar.button("Surprise Me!"):
+    random_movie = df.sample(n=1).iloc[0]
+    st.sidebar.write(f"### 🎬 {random_movie.get('Title', 'Unknown Title')}")
+    st.sidebar.write(f"⭐ IMDb Rating: {random_movie.get('IMDb Rating', 'N/A')}")
+    st.sidebar.write(f"📅 Year: {random_movie.get('Year', 'N/A')}")
+    st.sidebar.write(f"🎭 Genre: {random_movie.get('Genre', 'N/A')}")
+    st.sidebar.write(f"📝 Description: {random_movie.get('Description', 'No description available')}")
