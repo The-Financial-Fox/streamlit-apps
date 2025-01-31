@@ -30,10 +30,10 @@ st.markdown('<h1 class="title">🍿 What Should The 🪺 Nest Watch?</h1>', unsa
 st.markdown('<p class="subtitle">Select from dropdowns or enter your own preferences to get AI-powered movie recommendations!</p>', unsafe_allow_html=True)
 
 # **Dropdowns for User Preferences**
-genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance", "Thriller", "Fantasy", "Animation", "Documentary"]
-movie_types = ["Blockbuster", "Indie", "Cult Classic", "Critically Acclaimed", "Hidden Gem", "Based on a True Story"]
+genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance", "Thriller", "Fantasy", "Animation", "Documentary", "Other"]
+movie_types = ["Blockbuster", "Indie", "Cult Classic", "Critically Acclaimed", "Hidden Gem", "Based on a True Story", "Other"]
 actors = ["Leonardo DiCaprio", "Meryl Streep", "Denzel Washington", "Scarlett Johansson", "Tom Cruise", "Natalie Portman",
-          "Brad Pitt", "Angelina Jolie", "Morgan Freeman", "Emma Stone", "Keanu Reeves", "Joaquin Phoenix"]
+          "Brad Pitt", "Angelina Jolie", "Morgan Freeman", "Emma Stone", "Keanu Reeves", "Joaquin Phoenix", "Other"]
 
 st.subheader("🎭 Choose Your Preferences (Dropdowns or Custom Input)")
 
@@ -41,23 +41,32 @@ st.subheader("🎭 Choose Your Preferences (Dropdowns or Custom Input)")
 col1, col2 = st.columns(2)
 
 with col1:
-    selected_genre = st.selectbox("🎭 Choose a Genre (or type below):", genres)
-    selected_type = st.selectbox("🎬 Choose Type of Movie (or type below):", movie_types)
-    selected_actor = st.selectbox("🎭 Choose an Actor/Actress (or type below):", actors)
+    selected_genre = st.selectbox("🎭 Choose a Genre:", genres)
+    selected_type = st.selectbox("🎬 Choose Type of Movie:", movie_types)
+    selected_actor = st.selectbox("🎭 Choose an Actor/Actress:", actors)
 
 with col2:
-    custom_genre = st.text_input("🎭 Or Enter a Genre (if not in dropdown):", "")
-    custom_type = st.text_input("🎬 Or Enter a Type of Movie:", "")
-    custom_actor = st.text_input("🎭 Or Enter an Actor/Actress:", "")
+    custom_genre = st.text_input("🎭 If 'Other', Enter Genre:", "") if selected_genre == "Other" else ""
+    custom_type = st.text_input("🎬 If 'Other', Enter Type of Movie:", "") if selected_type == "Other" else ""
+    custom_actor = st.text_input("🎭 If 'Other', Enter Actor/Actress:", "") if selected_actor == "Other" else ""
 
-# **Determine User Selection**
-final_genre = custom_genre if custom_genre else selected_genre
-final_type = custom_type if custom_type else selected_type
-final_actor = custom_actor if custom_actor else selected_actor
+# **Determine Final User Selection**
+final_genre = custom_genre if selected_genre == "Other" else selected_genre
+final_type = custom_type if selected_type == "Other" else selected_type
+final_actor = custom_actor if selected_actor == "Other" else selected_actor
+
+# **Additional Details for Personalized Recommendation**
+st.subheader("📝 Any Extra Details? (Optional)")
+extra_details = st.text_area("💡 Add anything else about the kind of movie you’d like to watch! (e.g., 'I want something uplifting', 'Set in space', 'Great soundtrack')", "")
 
 # **Generate Movie Recommendation**
 if st.button("🎥 Get Movie Recommendation"):
     client = Groq(api_key=GROQ_API_KEY)
+    
+    prompt = f"Recommend a {final_type} {final_genre} movie starring {final_actor}."
+    if extra_details:
+        prompt += f" Also consider these additional preferences: {extra_details}."
+    
     response = client.chat.completions.create(
         messages=[
             {
@@ -65,8 +74,7 @@ if st.button("🎥 Get Movie Recommendation"):
                 "content": "You are an AI movie expert who recommends great films based on user preferences. "
                            "Provide a short, engaging movie recommendation along with a reason why they should watch it."
             },
-            {"role": "user", "content": f"Recommend a {final_type} {final_genre} movie starring {final_actor}. "
-                                        "Include a short description and why it’s worth watching."}
+            {"role": "user", "content": prompt}
         ],
         model="llama3-8b-8192",
     )
