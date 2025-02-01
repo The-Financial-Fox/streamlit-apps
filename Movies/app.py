@@ -4,7 +4,7 @@ from groq import Groq
 from dotenv import load_dotenv
 
 # -------------------------------
-# Setup & Environment Variables
+# Setup & Environment Variables like API Key
 # -------------------------------
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
