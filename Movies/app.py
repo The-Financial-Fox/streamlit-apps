@@ -33,8 +33,25 @@ st.markdown('<p class="subtitle">Select from dropdowns or enter your own prefere
 # **Dropdowns for User Preferences**
 genres = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance", "Thriller", "Fantasy", "Animation", "Documentary", "Other"]
 movie_types = ["Blockbuster", "Indie", "Cult Classic", "Critically Acclaimed", "Hidden Gem", "Based on a True Story", "Other"]
-actors = ["Leonardo DiCaprio", "Meryl Streep", "Denzel Washington", "Scarlett Johansson", "Tom Cruise", "Natalie Portman",
-          "Brad Pitt", "Angelina Jolie", "Morgan Freeman", "Emma Stone", "Keanu Reeves", "Joaquin Phoenix", "Other"]
+# Updated Actor/Actress list as requested.
+actors = [
+    "Anyone", 
+    "Henry Cavill", 
+    "Blake Lively", 
+    "Leonardo DiCaprio", 
+    "Meryl Streep", 
+    "Denzel Washington", 
+    "Scarlett Johansson", 
+    "Tom Cruise", 
+    "Natalie Portman", 
+    "Brad Pitt", 
+    "Angelina Jolie", 
+    "Morgan Freeman", 
+    "Emma Stone", 
+    "Keanu Reeves", 
+    "Joaquin Phoenix", 
+    "Other"
+]
 
 st.subheader("🎭 Choose Your Preferences (Dropdowns or Custom Input)")
 
